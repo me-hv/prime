@@ -55,10 +55,31 @@ This document details the architectural principles, data schema, component desig
 * **`Song`** (1) ─── (N) **`SongSection`**: Ordered modular building blocks (`HOOK`, `VERSE`, `BRIDGE`, `INTRO`, `OUTRO`, `PRE_CHORUS`, `BREAKDOWN`, `NOTES`).
 * **`User`** (1) ─── (N) **`CreativeProject`**: Collection releases (`EP`, `ALBUM`, `BEAT_TAPE`, `MIXTAPE`, `CONCEPT_SUITE`).
 * **`CreativeProject`** (N) ─── (N) **`Song`** via **`ProjectSong`**: Explicit tracklist sequencing board with `trackNumber`.
+* **`Skill`** (N) ─── (N) **`Exercise`** via **`ExerciseSkill`**: Core artistic competencies and training drills across 8+ disciplines.
+* **`User`** (1) ─── (N) **`TrainingSession`**: Practice session logs with durations, 1-5 ratings (Effort, Difficulty, Confidence), and reflection notes.
+* **`TrainingSession`** (N) ─── (1) **`WritingDocument`**: Direct link between rapid writing sprints and the Creative Workspace.
+* **`User`** (1) ─── (N) **`RhymeChain`** (1) ─── (N) **`RhymeEntry`**: Multi-syllabic rhyme scheme vault and syllabic matching.
+* **`User`** (1) ─── (N) **`VocabularyEntry`**: Lyrical dictionary with pronunciations, custom lines, and sensory associations.
 
 ---
 
-## 4. UI Design System & Aesthetic Tokens
+## 4. Training Engine Architecture (Phase 3)
+
+### Precision Web Audio Metronome & Lookahead Scheduler
+Standard JavaScript `setInterval` and `setTimeout` suffer from main-thread UI contention and aggressive background-tab throttling. To ensure true studio-grade rhythmic timing, PRIME implements a 2-tier Web Audio scheduler:
+1. A 25ms timer periodically inspects the `AudioContext.currentTime` timeline.
+2. Synthesized oscillator clicks (high accent on beat 1, lower tone on other beats) are pre-scheduled 100ms in advance directly onto the hardware audio thread.
+3. Beat flash callbacks fire in sync with scheduled audio pulses, guaranteeing sample-accurate pocket locking with zero timing drift.
+
+### Drift-Proof Timestamp-Delta Timer
+Training countdown and elapsed timers calculate remaining time from high-resolution timestamp deltas (`Date.now()` / `performance.now()`) rather than frame-by-frame ticks. If the artist minimizes the browser or locks their screen during a sprint, the timer calculates the exact elapsed interval upon return.
+
+### Creative Activity & Streak Synchronization
+When an artist finishes a drill and logs their self-evaluation, `completeTrainingSession` automatically dispatches a `CreativeActivity` record (`type: "PRACTICE"` or `"WRITING"`). This updates the Dashboard's daily streak, weekly practice minutes, and activity matrix without requiring manual duplication.
+
+---
+
+## 5. UI Design System & Aesthetic Tokens
 
 PRIME employs a bespoke **Studio Obsidian** dark theme:
 
@@ -76,17 +97,17 @@ PRIME employs a bespoke **Studio Obsidian** dark theme:
 ### Component Hierarchy
 * **Primitives (`src/components/ui/`)**: `Button`, `Card`, `Modal`, `Input`, `Textarea`, `Select`, `Badge`, `ProgressBar`, `Toast`.
 * **Navigation (`src/components/navigation/`)**: `Sidebar`, `MobileNav`, `GlobalQuickCaptureModal`, `NavigationProvider`.
-* **Domain Modules (`src/components/dashboard/`)**: `DashboardHeader`, `TodayMissionCard`, `TodayActivitiesSection`, `GoalsSection`, `WeeklyOverviewChart`, `CreativeStreakCard`, `QuickCapturesFeed`.
+* **Dashboard Modules (`src/components/dashboard/`)**: `DashboardHeader`, `TodayMissionCard`, `TodayActivitiesSection`, `GoalsSection`, `WeeklyOverviewChart`, `CreativeStreakCard`, `QuickCapturesFeed`.
+* **Creative Modules (`src/components/create/`)**: `WritingEditor`, `SongScaffolder`, `ProjectTracklistBoard`, `CaptureConverterModal`.
+* **Training Modules (`src/components/train/`)**: `PocketGym`, `MetronomeEngine`, `TrainingTimer`, `RapidSprintStudio`, `FreestylePrompter`, `RhymeBuilderView`, `VocabularyGymView`, `ProductionChallengeView`, `SessionCompletionModal`, `ExerciseCard`, `ExerciseListView`, `TodayTrainingCard`, `TrainingHubHeader`, `TrainingHistoryView`.
 
 ---
 
-## 5. Extension Points for Phase 2+
+## 6. Extension Points for Phase 4+
 
-1. **Lyrical Editor Integration (`/create`)**:
-   * The `QuickCapture` table is designed to directly export captures into full-length `SongDraft` documents.
+1. **Music Discovery & Study (`/discover`)**:
+   * Song structure analysis and rhyme scheme annotation linked to Rhyme Chains and Vocabulary entries.
 2. **Audio Waveform Recording (`/reflect` & `/create`)**:
-   * Real-time audio recording hooks can store blob references linked to `CreativeActivity` records.
-3. **Training Automation (`/train`)**:
-   * Timed drill completions can automatically dispatch `createCreativeActivity` records with `type: 'PRACTICE'` or `'WRITING'`.
-4. **Artist DNA Engine (`/progress`)**:
-   * Aggregates activity distributions and rhyme metric scores to construct a multidimensional artist fingerprint.
+   * Direct vocal take recording with local playback and waveform analysis.
+3. **Artist DNA Engine (`/progress`)**:
+   * Aggregates activity distributions, exercise ratings, and writing sprint frequencies to map the artist's developmental growth curve.

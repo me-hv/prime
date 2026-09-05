@@ -15,6 +15,12 @@ export async function GET() {
       sections,
       projects,
       projectSongs,
+      skills,
+      exercises,
+      trainingSessions,
+      rhymeChains,
+      rhymeEntries,
+      vocabularyEntries,
     ] = await Promise.all([
       prisma.user.findFirst({ include: { profile: true } }),
       prisma.profile.findFirst(),
@@ -41,10 +47,25 @@ export async function GET() {
         orderBy: { updatedAt: "desc" },
       }),
       prisma.projectSong.findMany({ orderBy: { trackNumber: "asc" } }),
+      prisma.skill.findMany({ orderBy: { name: "asc" } }),
+      prisma.exercise.findMany({
+        include: { skills: { include: { skill: true } } },
+        orderBy: { orderIndex: "asc" },
+      }),
+      prisma.trainingSession.findMany({
+        include: { exercise: true, writingDocument: true },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.rhymeChain.findMany({
+        include: { entries: true },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.rhymeEntry.findMany({ orderBy: { createdAt: "desc" } }),
+      prisma.vocabularyEntry.findMany({ orderBy: { createdAt: "desc" } }),
     ]);
 
     const exportData = {
-      version: "2.0.0",
+      version: "3.0.0",
       exportedAt: new Date().toISOString(),
       user,
       profile,
@@ -57,6 +78,12 @@ export async function GET() {
       songSections: sections,
       creativeProjects: projects,
       projectSongs,
+      skills,
+      exercises,
+      trainingSessions,
+      rhymeChains,
+      rhymeEntries,
+      vocabularyEntries,
     };
 
     return new NextResponse(JSON.stringify(exportData, null, 2), {

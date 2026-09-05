@@ -380,3 +380,242 @@ export interface SearchItemResult {
   updatedAt: string;
   snippet?: string;
 }
+
+// ==========================================
+// Phase 3: Training System Types
+// ==========================================
+
+export type SkillCategory =
+  | "RAP"
+  | "WRITING"
+  | "PRODUCTION"
+  | "EAR_TRAINING"
+  | "VOCABULARY";
+
+export const SKILL_CATEGORY_CONFIGS: Record<
+  SkillCategory,
+  { label: string; badgeClass: string; color: string }
+> = {
+  RAP: { label: "Rap & Flow", badgeClass: "bg-orange-500/15 text-orange-300 border-orange-500/30", color: "#FB923C" },
+  WRITING: { label: "Lyrical Writing", badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30", color: "#F59E0B" },
+  PRODUCTION: { label: "Production", badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30", color: "#A855F7" },
+  EAR_TRAINING: { label: "Ear Training", badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30", color: "#38BDF8" },
+  VOCABULARY: { label: "Vocabulary", badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30", color: "#10B981" },
+};
+
+export interface SkillData {
+  id: string;
+  name: string;
+  slug: string;
+  category: SkillCategory;
+  description: string | null;
+  exerciseCount?: number;
+}
+
+export type ExerciseCategory =
+  | "RAP"
+  | "WRITING"
+  | "FLOW"
+  | "RHYME"
+  | "FREESTYLE"
+  | "STORYTELLING"
+  | "VOCABULARY"
+  | "PRODUCTION"
+  | "EAR_TRAINING";
+
+export interface ExerciseCategoryConfig {
+  label: string;
+  shortLabel: string;
+  description: string;
+  badgeClass: string;
+  iconName: string;
+  color: string;
+}
+
+export const EXERCISE_CATEGORY_CONFIGS: Record<
+  ExerciseCategory,
+  ExerciseCategoryConfig
+> = {
+  RAP: {
+    label: "Rap & Delivery",
+    shortLabel: "Rap",
+    description: "Breath control, vocal conviction, diction, projection",
+    badgeClass: "bg-orange-500/15 text-orange-300 border-orange-500/30",
+    iconName: "Mic2",
+    color: "#FB923C",
+  },
+  FLOW: {
+    label: "Flow & Cadence",
+    shortLabel: "Flow",
+    description: "Pocket elasticity, syncopation shifts, triplets, metric division",
+    badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    iconName: "Activity",
+    color: "#F43F5E",
+  },
+  WRITING: {
+    label: "Rapid Writing",
+    shortLabel: "Writing",
+    description: "Timed writing sprints, 16-bar execution, zero-editing instincts",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    iconName: "PenTool",
+    color: "#F59E0B",
+  },
+  RHYME: {
+    label: "Rhyme Construction",
+    shortLabel: "Rhyme",
+    description: "Multisyllabic chains, internal rhyme weaving, slant rhymes",
+    badgeClass: "bg-yellow-500/15 text-yellow-300 border-yellow-500/30",
+    iconName: "Sparkles",
+    color: "#EAB308",
+  },
+  FREESTYLE: {
+    label: "Freestyle & Improv",
+    shortLabel: "Freestyle",
+    description: "Random word prompt injection, object freestyle, topic pivot",
+    badgeClass: "bg-red-500/15 text-red-300 border-red-500/30",
+    iconName: "Flame",
+    color: "#EF4444",
+  },
+  STORYTELLING: {
+    label: "Storytelling & Concept",
+    shortLabel: "Story",
+    description: "3-part narrative arcs, sensory detail, perspective shifts",
+    badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
+    iconName: "BookOpen",
+    color: "#818CF8",
+  },
+  VOCABULARY: {
+    label: "Vocabulary Gym",
+    shortLabel: "Vocab",
+    description: "Daily word discovery, lyrical lines, sensory associations",
+    badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    iconName: "Library",
+    color: "#10B981",
+  },
+  PRODUCTION: {
+    label: "Beat Production",
+    shortLabel: "Production",
+    description: "Speed sample flips, 3-element beats, 5-sound arrangements",
+    badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+    iconName: "Sliders",
+    color: "#A855F7",
+  },
+  EAR_TRAINING: {
+    label: "Ear Training",
+    shortLabel: "Ear",
+    description: "Tempo pocket sync, major/minor mood, interval discernment",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    iconName: "Headphones",
+    color: "#38BDF8",
+  },
+};
+
+export type ExerciseDifficulty =
+  | "BEGINNER"
+  | "INTERMEDIATE"
+  | "ADVANCED"
+  | "EXPERT";
+
+export const DIFFICULTY_CONFIGS: Record<
+  ExerciseDifficulty,
+  { label: string; badgeClass: string; dots: number }
+> = {
+  BEGINNER: { label: "Beginner", badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30", dots: 1 },
+  INTERMEDIATE: { label: "Intermediate", badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30", dots: 2 },
+  ADVANCED: { label: "Advanced", badgeClass: "bg-orange-500/15 text-orange-300 border-orange-500/30", dots: 3 },
+  EXPERT: { label: "Expert", badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30", dots: 4 },
+};
+
+export interface ExerciseData {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  category: ExerciseCategory;
+  difficulty: ExerciseDifficulty;
+  estimatedDuration: number;
+  instructions: string;
+  constraints: string | null;
+  starterPrompt: string | null;
+  defaultBpm: number | null;
+  timeLimitSeconds: number | null;
+  active: boolean;
+  orderIndex: number;
+  skills: SkillData[];
+  sessionCount?: number;
+  lastPracticedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type TrainingSessionStatus =
+  | "NOT_STARTED"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "ABANDONED";
+
+export interface TrainingSessionData {
+  id: string;
+  userId: string;
+  exerciseId: string;
+  status: TrainingSessionStatus;
+  startedAt: string;
+  endedAt: string | null;
+  durationSeconds: number;
+  effortRating: number | null;
+  difficultyRating: number | null;
+  confidenceRating: number | null;
+  notes: string | null;
+  resultPayload: string | null;
+  writingDocumentId: string | null;
+  exercise?: ExerciseData;
+  writingDocument?: WritingDocumentData | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RhymeEntryData {
+  id: string;
+  chainId: string;
+  rhymeText: string;
+  syllables: number | null;
+  orderIndex: number;
+  notes: string | null;
+  createdAt: string;
+}
+
+export interface RhymeChainData {
+  id: string;
+  userId: string;
+  sessionId: string | null;
+  anchorPhrase: string;
+  syllableCount: number;
+  notes: string | null;
+  entries: RhymeEntryData[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface VocabularyEntryData {
+  id: string;
+  userId: string;
+  sessionId: string | null;
+  word: string;
+  definition: string;
+  pronunciation: string | null;
+  partOfSpeech: string | null;
+  userLine: string | null;
+  associations: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface TrainingStatsData {
+  streakDays: number;
+  streakActiveToday: boolean;
+  weeklyPracticeMinutes: number;
+  totalSessionsCompleted: number;
+  skillsTrainedCount: number;
+  totalPracticeMinutes: number;
+}
+

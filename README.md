@@ -63,6 +63,32 @@ PRIME is **not** a generic to-do list, habit tracker, or SaaS productivity board
 * **Universal Creative Search**:
   * Instant typeahead workspace search across drafts, lyrics, song titles, concepts, project tracks, and raw captures with keyboard navigation and direct routing.
 
+### Phase 3: Training System (`/train`)
+* **Artist Gymnasium Command Center**:
+  * **Today's Training Recommendation**: Deterministic drill recommendation based on artist practice gaps.
+  * **Active Training Ribbon**: Real-time stats (Daily Training Streak, Weekly Practice Minutes, Total Sessions Logged, Skills Covered).
+  * **Drill Catalog Grid**: 40+ curated drills across 8+ artistic disciplines with category tabs, difficulty levels, duration filters, and live search.
+* **Web Audio Metronome & Pocket Gym (`/train/pocket-gym`)**:
+  * Precision Web Audio API lookahead scheduler (`audioContext.currentTime`) with zero timing drift.
+  * 40–240 BPM slider, tap tempo algorithm, volume gain, and standard hip-hop tempo presets (80–145 BPM).
+  * Time signatures (3/4, 4/4, 6/4), subdivisions (1/4, 1/8, 1/16, triplets), and visual beat pulse indicator.
+  * Cadence drills (*Pocket Shift*, *Cadence Switch*, *Beat Division*, *Accent Displacement*).
+* **10-Minute Rapid 16-Bar Writing Sprint Studio**:
+  * Distraction-free writing arena with drift-proof timestamp-delta countdown timer.
+  * Live bar counter (`X / 16 bars`), word and character counters.
+  * 1-Click save directly into `WritingDocument` (`type: "BARS"`) in Creative Workspace.
+* **Freestyle Prompter**:
+  * Timed random word prompter with configurable intervals (5s, 10s, 15s, 30s) and backing metronome click.
+* **Multisyllabic Rhyme Chain Builder**:
+  * Anchor phrase builder, syllable counter, rhyme variations stream, and permanent rhyme vault.
+* **Vocabulary Gym & Word Vault**:
+  * Word study logger, definitions, phonetics, original lyrical lines, and sensory association mapping.
+* **Beat Production Arena**:
+  * Speed challenges (*15-min sample flip*, *3-element beat*, *5-sound arrangement*) with interactive constraint checklists and DAW session logger.
+* **Post-Drill Self-Evaluation & Streak Integration**:
+  * 1-5 ratings for Focus & Intensity, Technical Difficulty, and Execution Confidence with reflection notes.
+  * Automatic synchronization with `CreativeActivity` and dashboard streaks.
+
 ---
 
 ## 4. Tech Stack
