@@ -23,6 +23,8 @@ export async function searchCreativeWorkspace(
     bottlenecks,
     breakthroughs,
     milestones,
+    skills,
+    profile,
   ] = await Promise.all([
     // 1. Writings
     prisma.writingDocument.findMany({
@@ -196,6 +198,35 @@ export async function searchCreativeWorkspace(
       take: 4,
       orderBy: { date: "desc" },
     }),
+
+    // 12. Skills
+    prisma.skill.findMany({
+      where: {
+        OR: [
+          { name: { contains: q } },
+          { slug: { contains: q } },
+          { description: { contains: q } },
+          { category: { contains: q } },
+        ],
+      },
+      take: 5,
+    }),
+
+    // 13. Artist DNA Profile
+    prisma.artistDNAProfile.findFirst({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { identityStatement: { contains: q } },
+          { creativeValues: { contains: q } },
+          { favoriteGenres: { contains: q } },
+          { favoriteArtists: { contains: q } },
+          { favoriteProducers: { contains: q } },
+          { favoriteStyles: { contains: q } },
+          { favoriteThemes: { contains: q } },
+        ],
+      },
+    }),
   ]);
 
   const results: SearchItemResult[] = [];
@@ -351,6 +382,34 @@ export async function searchCreativeWorkspace(
       href: `/reflect?tab=milestones`,
       updatedAt: m.updatedAt.toISOString(),
       snippet: m.description,
+    });
+  }
+
+  // Map Skills
+  for (const sk of skills) {
+    results.push({
+      id: sk.id,
+      title: sk.name,
+      subtitle: `Skill • ${sk.category} • Category Matrix`,
+      type: "SKILL",
+      categoryBadge: "Skill Matrix",
+      href: `/progress/skills/${sk.slug}`,
+      updatedAt: sk.updatedAt.toISOString(),
+      snippet: sk.description || undefined,
+    });
+  }
+
+  // Map Artist DNA
+  if (profile) {
+    results.push({
+      id: profile.id,
+      title: "Artist DNA Profile",
+      subtitle: "Identity, Creative Values & Stylistic Preferences",
+      type: "DNA",
+      categoryBadge: "Artist DNA",
+      href: `/progress/artist-dna`,
+      updatedAt: profile.updatedAt.toISOString(),
+      snippet: profile.identityStatement,
     });
   }
 

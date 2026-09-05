@@ -35,6 +35,7 @@ model User {
   bottlenecks        Bottleneck[]
   breakthroughs      Breakthrough[]
   milestones         Milestone[]
+  artistDNA          ArtistDNAProfile?
 }
 
 model Profile {
@@ -601,4 +602,29 @@ model Milestone {
 
   @@index([userId, date])
   @@index([userId, category])
+}
+
+// ==========================================
+// Phase 5: Progress & Artist DNA Models
+// ==========================================
+
+model ArtistDNAProfile {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  identityStatement   String   @default("I am dedicated to mastering lyricism, flow dynamics, and sound architecture to build a timeless, emotionally resonant catalog.")
+  creativeValues      String   @default("[\"Authenticity\", \"Technical Skill\", \"Storytelling\", \"Emotional Honesty\", \"Originality\", \"Craftsmanship\"]")
+  favoriteGenres      String   @default("[\"Hip-Hop\", \"Boom Bap\", \"Jazz Rap\", \"Alternative R&B\", \"Neo-Soul\"]")
+  favoriteArtists     String   @default("[\"Kendrick Lamar\", \"André 3000\", \"MF DOOM\", \"Black Thought\", \"Nas\"]")
+  favoriteProducers   String   @default("[\"J Dilla\", \"Madlib\", \"The Alchemist\", \"RZA\", \"Kanye West\"]")
+  favoriteStyles      String   @default("[\"Multi-syllabic rhyming\", \"Off-beat syncopation\", \"Storytelling\", \"Concept-driven projects\"]")
+  preferredBpmRange   String   @default("85 - 95 BPM")
+  favoriteThemes      String   @default("[\"Self-mastery\", \"Systemic critique\", \"Personal evolution\", \"Mortality\", \"Creative discipline\"]")
+  creativeEnvironment String   @default("Late night, dim lighting, headphones, notebook and pencil before DAW.")
+  userStrengths       String   @default("[\"Flow variability\", \"Internal rhymes\", \"Conceptual songwriting\"]")
+  userWeaknesses      String   @default("[\"Hook simplicity\", \"Vocal projection\", \"Mix engineering\"]")
+  manualFocusOverride String?
+  notes               String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }

@@ -31,6 +31,7 @@ export async function GET() {
       bottlenecks,
       breakthroughs,
       milestones,
+      artistDNA,
     ] = await Promise.all([
       prisma.user.findFirst({ include: { profile: true } }),
       prisma.profile.findFirst(),
@@ -103,13 +104,15 @@ export async function GET() {
         orderBy: { date: "desc" },
       }),
       prisma.milestone.findMany({ orderBy: { date: "desc" } }),
+      prisma.artistDNAProfile.findFirst(),
     ]);
 
     const exportData = {
-      version: "4.0.0",
+      version: "5.0.0",
       exportedAt: new Date().toISOString(),
       user,
       profile,
+      artistDNAProfile: artistDNA,
       dailyMissions: missions,
       creativeActivities: activities,
       goals,

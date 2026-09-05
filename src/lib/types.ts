@@ -385,7 +385,9 @@ export interface SearchItemResult {
     | "REFLECTION"
     | "BOTTLENECK"
     | "BREAKTHROUGH"
-    | "MILESTONE";
+    | "MILESTONE"
+    | "SKILL"
+    | "DNA";
   categoryBadge: string;
   href: string;
   updatedAt: string;
@@ -1223,6 +1225,350 @@ export interface WeeklyDiagnosticInsight {
   strongestMomentum: string;
   suggestedFocus: string;
   actionableRecommendation: string;
+}
+
+// ==========================================
+// Phase 5: Progress & Artist DNA Types
+// ==========================================
+
+export type TimeRangePeriod = "7D" | "30D" | "90D" | "6M" | "1Y" | "ALL";
+
+export interface TimeRangeConfig {
+  id: TimeRangePeriod;
+  label: string;
+  days: number | null; // null for ALL
+  shortLabel: string;
+}
+
+export const TIME_RANGE_CONFIGS: Record<TimeRangePeriod, TimeRangeConfig> = {
+  "7D": { id: "7D", label: "Last 7 Days", days: 7, shortLabel: "7D" },
+  "30D": { id: "30D", label: "Last 30 Days", days: 30, shortLabel: "30D" },
+  "90D": { id: "90D", label: "Last 90 Days", days: 90, shortLabel: "90D" },
+  "6M": { id: "6M", label: "Last 6 Months", days: 180, shortLabel: "6M" },
+  "1Y": { id: "1Y", label: "Last 1 Year", days: 365, shortLabel: "1Y" },
+  "ALL": { id: "ALL", label: "All Time", days: null, shortLabel: "ALL" },
+};
+
+export type PatternConfidenceLevel =
+  | "INSUFFICIENT_DATA"
+  | "EMERGING_PATTERN"
+  | "RECURRING_PATTERN"
+  | "STRONG_PATTERN";
+
+export interface PatternConfidenceConfig {
+  label: string;
+  badgeClass: string;
+  description: string;
+}
+
+export const PATTERN_CONFIDENCE_CONFIGS: Record<
+  PatternConfidenceLevel,
+  PatternConfidenceConfig
+> = {
+  INSUFFICIENT_DATA: {
+    label: "Insufficient Data",
+    badgeClass: "bg-zinc-500/10 text-zinc-400 border-zinc-500/20",
+    description: "PRIME needs more creative history before identifying a reliable pattern.",
+  },
+  EMERGING_PATTERN: {
+    label: "Emerging Pattern",
+    badgeClass: "bg-sky-500/10 text-sky-400 border-sky-500/20",
+    description: "Beginning to appear across multiple recent sessions.",
+  },
+  RECURRING_PATTERN: {
+    label: "Recurring Pattern",
+    badgeClass: "bg-amber-500/10 text-amber-400 border-amber-500/20",
+    description: "Consistently observed across several weeks of creative work.",
+  },
+  STRONG_PATTERN: {
+    label: "Strong Pattern",
+    badgeClass: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
+    description: "Established hallmark of your creative process with deep supporting evidence.",
+  },
+};
+
+export type SkillTrendDirection = "UP" | "DOWN" | "STEADY" | "NEW" | "INACTIVE";
+
+export type PracticeFrequencyLevel = "High" | "Medium" | "Low" | "None";
+
+export interface ProgressOverviewData {
+  period: TimeRangePeriod;
+  practiceMinutes: number;
+  practiceMinutesDeltaPct: number | null;
+  practiceSessionsCount: number;
+  wordsWritten: number;
+  wordsWrittenDeltaPct: number | null;
+  writingSessionsCount: number;
+  songsStartedCount: number;
+  songsProgressedCount: number;
+  songsFinishedCount: number;
+  studiesCompletedCount: number;
+  studiesDeltaPct: number | null;
+  reflectionsCompletedCount: number;
+  activeCreativeDays: number;
+  totalPeriodDays: number;
+  activeProjectsCount: number;
+  breakthroughsCount: number;
+  currentStreak: number;
+  creativeMomentum: "HIGH" | "STEADY" | "REBUILDING" | "STARTING";
+}
+
+export interface CreativeOutputTimeSeriesPoint {
+  date: string;
+  label: string;
+  writingMinutes: number;
+  practiceMinutes: number;
+  studyMinutes: number;
+  reflectionMinutes: number;
+  totalMinutes: number;
+}
+
+export interface FinishingHealthData {
+  totalCreated: number;
+  totalFinished: number;
+  totalActive: number;
+  totalArchived: number;
+  completionRatioPct: number;
+  avgDaysToFinish: number | null;
+  stalledSongsCount: number;
+  funnelDistribution: Array<{
+    status: SongStatus;
+    label: string;
+    count: number;
+    percentage: number;
+  }>;
+  stalledSongs: Array<{
+    id: string;
+    title: string;
+    status: SongStatus;
+    daysInactive: number;
+    genre: string | null;
+    nextAction: string | null;
+    updatedAt: string;
+  }>;
+}
+
+export interface SkillMatrixItem {
+  id: string;
+  name: string;
+  slug: string;
+  category: SkillCategory;
+  description: string | null;
+  practiceFrequency: PracticeFrequencyLevel;
+  completedSessions: number;
+  totalPracticeMinutes: number;
+  avgConfidence: number | null;
+  avgDifficulty: number | null;
+  trend: SkillTrendDirection;
+  lastPracticed: string | null;
+  isUndertrained: boolean;
+  exerciseCount: number;
+  studyCount: number;
+  breakthroughCount: number;
+  creativeWorkCount: number;
+}
+
+export interface SkillDetailData {
+  skill: SkillData;
+  matrix: SkillMatrixItem;
+  historyPoints: Array<{
+    date: string;
+    sessionTitle: string;
+    durationSeconds: number;
+    effortRating: number | null;
+    difficultyRating: number | null;
+    confidenceRating: number | null;
+  }>;
+  associatedExercises: ExerciseData[];
+  associatedStudies: StudySessionData[];
+  associatedBreakthroughs: BreakthroughData[];
+  associatedBottlenecks: BottleneckData[];
+  associatedSongs: SongData[];
+  associatedWritings: WritingDocumentData[];
+  recentReflectionMentions: Array<{
+    date: string;
+    skillWorked: string | null;
+    difficulties: string | null;
+    learned: string | null;
+  }>;
+}
+
+export interface StrengthSignal {
+  skillName: string;
+  skillId: string;
+  summary: string;
+  evidence: string[];
+  category: SkillCategory;
+}
+
+export interface WeaknessSignal {
+  skillName: string;
+  skillId: string;
+  summary: string;
+  evidence: string[];
+  category: SkillCategory;
+  type: "UNDERTRAINED" | "CHALLENGE" | "BOTTLENECK";
+  suggestedExerciseSlug: string | null;
+  suggestedExerciseTitle: string | null;
+}
+
+export interface StudyPracticeGapItem {
+  focus: string;
+  studyVolume: "HIGH" | "MEDIUM" | "LOW" | "NONE";
+  practiceVolume: "HIGH" | "MEDIUM" | "LOW" | "NONE";
+  studyCount: number;
+  practiceCount: number;
+  status: "BALANCED" | "STUDY_GAP" | "PRACTICE_GAP" | "DORMANT";
+  insight: string;
+  actionTargetCategory: string | null;
+}
+
+export interface ProgressInsightItem {
+  id: string;
+  type:
+    | "POSITIVE"
+    | "IMBALANCE"
+    | "GAP"
+    | "BOTTLENECK"
+    | "CONSISTENCY"
+    | "NEGLECTED"
+    | "BREAKTHROUGH";
+  title: string;
+  observation: string;
+  evidence: string;
+  actionLabel: string | null;
+  actionHref: string | null;
+}
+
+export interface CurrentArtistFocusData {
+  title: string;
+  source:
+    | "MANUAL_OVERRIDE"
+    | "ACTIVE_GOAL"
+    | "BOTTLENECK"
+    | "UNDERTRAINED_SKILL"
+    | "PROJECT"
+    | "DEFAULT";
+  rationale: string;
+  supportingSkill: string | null;
+  supportingSkillId: string | null;
+  recommendedActionLabel: string;
+  recommendedActionHref: string;
+}
+
+export interface ArtistDNAData {
+  id: string;
+  userId: string;
+  identityStatement: string;
+  creativeValues: string[];
+  favoriteGenres: string[];
+  favoriteArtists: string[];
+  favoriteProducers: string[];
+  favoriteStyles: string[];
+  preferredBpmRange: string;
+  favoriteThemes: string[];
+  creativeEnvironment: string;
+  userStrengths: string[];
+  userWeaknesses: string[];
+  manualFocusOverride: string | null;
+  notes: string | null;
+  observedPatterns: {
+    strengths: Array<{
+      title: string;
+      evidence: string;
+      confidence: PatternConfidenceLevel;
+    }>;
+    emerging: Array<{
+      title: string;
+      evidence: string;
+      confidence: PatternConfidenceLevel;
+    }>;
+    undertrained: Array<{
+      title: string;
+      evidence: string;
+      confidence: PatternConfidenceLevel;
+    }>;
+    tendencies: Array<{
+      title: string;
+      evidence: string;
+      confidence: PatternConfidenceLevel;
+    }>;
+    studyPatterns: Array<{
+      title: string;
+      evidence: string;
+      confidence: PatternConfidenceLevel;
+    }>;
+  };
+  dimensions: {
+    creator: {
+      topFormat: string;
+      distribution: {
+        writingPct: number;
+        songsPct: number;
+        productionPct: number;
+      };
+      summary: string;
+    };
+    student: {
+      topFocus: string;
+      studiedArtistsCount: number;
+      totalStudies: number;
+      summary: string;
+    };
+    practitioner: {
+      topSkill: string;
+      totalPracticeHours: number;
+      avgEffort: number;
+      summary: string;
+    };
+    finisher: {
+      finishRatio: number;
+      activePipelineCount: number;
+      summary: string;
+    };
+    explorer: {
+      genreDiversity: number;
+      skillBreadth: number;
+      summary: string;
+    };
+    reflector: {
+      reviewConsistencyPct: number;
+      totalReviews: number;
+      summary: string;
+    };
+  };
+  beforeVsNow: {
+    periodA: {
+      label: string;
+      practiceHours: number;
+      finishedSongs: number;
+      writingCount: number;
+      studyCount: number;
+    };
+    periodB: {
+      label: string;
+      practiceHours: number;
+      finishedSongs: number;
+      writingCount: number;
+      studyCount: number;
+    };
+    summary: string;
+  } | null;
+  evolutionTimeline: Array<{
+    id: string;
+    date: string;
+    type:
+      | "MILESTONE"
+      | "BREAKTHROUGH"
+      | "SONG_FINISHED"
+      | "PROJECT_COMPLETED"
+      | "SKILL_ACHIEVEMENT"
+      | "BOTTLENECK_RESOLVED";
+    title: string;
+    category: string;
+    description: string;
+    significance: string | null;
+  }>;
 }
 
 

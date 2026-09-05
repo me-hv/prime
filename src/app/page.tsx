@@ -7,6 +7,7 @@ import { getQuickCaptures } from "@/actions/captures";
 import { getDashboardStats, getStreakMatrix } from "@/actions/stats";
 import { getDiscoveryStats, getTodayStudyRecommendation } from "@/actions/discovery";
 import { getReflectionStats } from "@/actions/reflection";
+import { getCurrentArtistFocus, getProgressInsights, getFinishingHealth } from "@/actions/progress";
 
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { CurrentFocusCard } from "@/components/dashboard/CurrentFocusCard";
@@ -17,6 +18,7 @@ import { WeeklyOverviewChart } from "@/components/dashboard/WeeklyOverviewChart"
 import { CreativeStreakCard } from "@/components/dashboard/CreativeStreakCard";
 import { QuickCapturesFeed } from "@/components/dashboard/QuickCapturesFeed";
 import { CreativeLoopWidget } from "@/components/dashboard/CreativeLoopWidget";
+import { ArtistGrowthWidget } from "@/components/dashboard/ArtistGrowthWidget";
 
 export const dynamic = "force-dynamic";
 
@@ -33,6 +35,9 @@ export default async function HomePage() {
     discoveryStats,
     reflectionStats,
     todayStudy,
+    currentArtistFocus,
+    progressInsights,
+    finishingHealth,
   ] = await Promise.all([
     getProfile(),
     getTodayMission(),
@@ -45,6 +50,27 @@ export default async function HomePage() {
     getDiscoveryStats().catch(() => undefined),
     getReflectionStats().catch(() => undefined),
     getTodayStudyRecommendation().catch(() => null),
+    getCurrentArtistFocus().catch(() => ({
+      title: "Master Flow Dynamics & Complete First Body of Work",
+      source: "DEFAULT" as const,
+      rationale: "Foundational artist development: Build lyrical density, cadence control, and catalog output.",
+      supportingSkill: "Flow & Cadence",
+      supportingSkillId: null,
+      recommendedActionLabel: "Start Daily Gym Workout",
+      recommendedActionHref: "/train",
+    })),
+    getProgressInsights("7D").catch(() => []),
+    getFinishingHealth().catch(() => ({
+      totalCreated: 0,
+      totalFinished: 0,
+      totalActive: 0,
+      totalArchived: 0,
+      completionRatioPct: 0,
+      avgDaysToFinish: null,
+      stalledSongsCount: 0,
+      funnelDistribution: [],
+      stalledSongs: [],
+    })),
   ]);
 
   return (
@@ -68,7 +94,16 @@ export default async function HomePage() {
         todayStudy={todayStudy}
       />
 
-      {/* 4. Today's Primary Mission */}
+      {/* 4. Artist Growth & Progress Focus */}
+      <ArtistGrowthWidget
+        currentFocus={currentArtistFocus}
+        topInsight={progressInsights[0] || null}
+        practiceMinutesThisWeek={dashboardStats.totalCreativeMinutesWeek}
+        streakDays={dashboardStats.currentStreakDays}
+        finishedSongsCount={finishingHealth.totalFinished}
+      />
+
+      {/* 5. Today's Primary Mission */}
       <TodayMissionCard mission={todayMission} />
 
       {/* 4. Main Dashboard Grid Layout */}

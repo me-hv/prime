@@ -7,6 +7,7 @@ async function main() {
   console.log("Seeding PRIME database with Phase 1, 2 & 3 models...");
 
   // Clean existing data in reverse relational order
+  await prisma.artistDNAProfile.deleteMany();
   await prisma.milestone.deleteMany();
   await prisma.breakthrough.deleteMany();
   await prisma.bottleneck.deleteMany();
@@ -56,6 +57,71 @@ async function main() {
           currentFocus: "BUILD MY MUSIC CAREER & FINISH MY DEBUT EP",
           vision:
             "Create timeless music with surgical lyrical precision, hypnotic cadence, and rich production architecture. Ship finished projects consistently.",
+        },
+      },
+      artistDNA: {
+        create: {
+          identityStatement:
+            "I am dedicated to mastering lyricism, rhythmic cadence, and sonic texture to construct a timeless, authentic catalog without creative compromise.",
+          creativeValues: JSON.stringify([
+            "Authenticity",
+            "Technical Skill",
+            "Storytelling",
+            "Emotional Honesty",
+            "Originality",
+            "Craftsmanship",
+            "Consistency",
+            "Finishing",
+          ]),
+          favoriteGenres: JSON.stringify([
+            "Hip-Hop",
+            "Boom Bap",
+            "Jazz Rap",
+            "Alternative R&B",
+            "Neo-Soul",
+          ]),
+          favoriteArtists: JSON.stringify([
+            "Kendrick Lamar",
+            "André 3000",
+            "MF DOOM",
+            "Black Thought",
+            "Nas",
+          ]),
+          favoriteProducers: JSON.stringify([
+            "J Dilla",
+            "Madlib",
+            "The Alchemist",
+            "RZA",
+            "Kanye West",
+          ]),
+          favoriteStyles: JSON.stringify([
+            "Multi-syllabic rhyming",
+            "Off-beat syncopation",
+            "Narrative storytelling",
+            "Concept-driven albums",
+          ]),
+          preferredBpmRange: "84 - 94 BPM",
+          favoriteThemes: JSON.stringify([
+            "Self-mastery",
+            "Systemic critique",
+            "Personal evolution",
+            "Mortality & Legacy",
+            "Creative discipline",
+          ]),
+          creativeEnvironment:
+            "Late night, dim warm lighting, noise-canceling headphones, physical notebook & pencil before booting DAW.",
+          userStrengths: JSON.stringify([
+            "Flow pocket switching",
+            "Internal rhyming schemes",
+            "Conceptual songwriting",
+          ]),
+          userWeaknesses: JSON.stringify([
+            "Hook simplicity & catchiness",
+            "Vocal projection under fatigue",
+            "Mix balance during production",
+          ]),
+          notes:
+            "Core artistic rule: Never release a record where a single bar was phoned in. Lyrical integrity is non-negotiable.",
         },
       },
     },

@@ -70,6 +70,7 @@ This document details the architectural principles, data schema, component desig
 * **`User`** (1) ─── (N) **`Bottleneck`**: Diagnosed creative obstacles with 1-5 severity ratings, attempted solutions, and 1-click **Train Weakness** launcher to gymnasium drills.
 * **`User`** (1) ─── (N) **`Breakthrough`**: Breakthrough log linking insights directly to skills and finished songs.
 * **`User`** (1) ─── (N) **`Milestone`**: Visual artistic milestone timeline across career, craft, releases, and milestones.
+* **`User`** (1) ─── (1) **`ArtistDNAProfile`**: Core artist identity statement, ranked creative values, workflow preferences, observed patterns, and 6 descriptive dimensions.
 
 ---
 
@@ -90,7 +91,18 @@ DISCOVER → STUDY → REFLECT → IDENTIFY WEAKNESS → PRACTICE → CREATE →
 
 ---
 
-## 5. UI Design System & Aesthetic Tokens
+## 5. Progress & Artist DNA Architecture (Phase 5)
+
+### Analytical Principles
+1. **Deterministic Metrics**: Every statistic (practice minutes, skill confidence, finishing rates, creative momentum) is calculated deterministically from source records (`TrainingSession`, `WritingDocument`, `Song`, `StudySession`, `DailyReflection`, `Bottleneck`, `Breakthrough`, `Milestone`). No fabricated AI scores.
+2. **Time-Range Period Scoping**: Instant aggregation across 7D, 30D (default), 90D, 6M, 1Y, and ALL time.
+3. **Honest Pattern Confidence**: PRIME's observed behavioral patterns explicitly state confidence levels (*Insufficient Data*, *Emerging Pattern*, *Recurring Pattern*, *Strong Pattern*) grounded in sample sizes and verification history.
+4. **Descriptive Not Prescriptive Dimensions**: Six artist dimensions (*Creator*, *Student*, *Practitioner*, *Finisher*, *Explorer*, *Reflector*) provide a nuanced profile of current artistic habits without gamified tier gating.
+5. **Actionable Gap Analysis**: Surfaces study-to-practice and create-to-finish drop-offs with 1-click execution bridges.
+
+---
+
+## 6. UI Design System & Aesthetic Tokens
 
 PRIME employs a bespoke **Studio Obsidian** dark theme:
 
@@ -108,19 +120,22 @@ PRIME employs a bespoke **Studio Obsidian** dark theme:
 ### Component Hierarchy
 * **Primitives (`src/components/ui/`)**: `Button`, `Card`, `Modal`, `Input`, `Textarea`, `Select`, `Badge`, `ProgressBar`, `Toast`.
 * **Navigation (`src/components/navigation/`)**: `Sidebar`, `MobileNav`, `GlobalQuickCaptureModal`, `NavigationProvider`.
-* **Dashboard Modules (`src/components/dashboard/`)**: `DashboardHeader`, `TodayMissionCard`, `TodayActivitiesSection`, `GoalsSection`, `WeeklyOverviewChart`, `CreativeStreakCard`, `QuickCapturesFeed`, `CreativeLoopWidget`.
+* **Dashboard Modules (`src/components/dashboard/`)**: `DashboardHeader`, `TodayMissionCard`, `TodayActivitiesSection`, `GoalsSection`, `WeeklyOverviewChart`, `CreativeStreakCard`, `QuickCapturesFeed`, `CreativeLoopWidget`, `ArtistGrowthWidget`.
 * **Creative Modules (`src/components/create/`)**: `WritingEditor`, `SongScaffolder`, `ProjectTracklistBoard`, `CaptureConverterModal`.
 * **Training Modules (`src/components/train/`)**: `PocketGym`, `MetronomeEngine`, `TrainingTimer`, `RapidSprintStudio`, `FreestylePrompter`, `RhymeBuilderView`, `VocabularyGymView`, `ProductionChallengeView`, `SessionCompletionModal`, `ExerciseCard`, `ExerciseListView`, `TodayTrainingCard`, `TrainingHubHeader`, `TrainingHistoryView`.
 * **Discovery Modules (`src/components/discover/`)**: `DiscoverHubHeader`, `TodayStudyHero`, `ReferenceCard`, `ReferenceListView`, `ReferenceModal`, `ArtistCard`, `ArtistListView`, `ArtistModal`, `StudyVaultView`, `StudySessionRunner`, `StudyPracticeModal`, `AlbumStudyView`, `AlbumStudyModal`, `ListeningDiaryView`, `ListeningEntryModal`.
 * **Reflection Modules (`src/components/reflect/`)**: `ReflectHubHeader`, `DailyReflectionView`, `WeeklyReviewView`, `BottleneckAuditView`, `BottleneckModal`, `BreakthroughLogView`, `BreakthroughModal`, `MilestonesTimelineView`, `MilestoneModal`.
+* **Progress Modules (`src/components/progress/`)**: `ProgressHeader`, `ArtistGrowthOverview`, `CurrentFocusCard`, `ProgressInsightsSection`, `CreativeOutputSection`, `SkillMatrixTable`, `FinishingHealthView`, `StudyPracticeGapView`, `CreateFinishGapView`, `StrengthWeaknessSignals`, `CreativeConsistencyView`.
+  * **Skill Detail (`src/components/progress/skills/`)**: `SkillDetailView`.
+  * **Artist DNA (`src/components/progress/dna/`)**: `ArtistIdentityStatementEditor`, `CreativeValuesEditor`, `CreativePreferencesEditor`, `ObservedPatternsView`, `ArtistDimensionsView`, `BeforeVsNowCard`, `ArtistEvolutionTimeline`.
 
 ---
 
-## 6. Extension Points for Phase 5+
+## 7. Extension Points for Phase 6+
 
-1. **Artist DNA & Progress Analytics (`/progress`)**:
-   * Multidimensional competency spider charts, flow fingerprinting, catalog growth velocity, and learning loop conversion metrics.
-2. **AI Creative Sparring Partner & Intelligent Drill Suggester**:
+1. **AI Creative Sparring Partner & Intelligent Drill Suggester**:
    * Context-aware prompt suggestions based on unresolved bottlenecks, rhyme scheme complexity analysis, and cadence critique.
-3. **Audio Waveform Recording & Vocal Take Management**:
+2. **Audio Waveform Recording & Vocal Take Management**:
    * In-browser audio take recording, waveform visualization, and multi-track demo management.
+3. **Deep Integrations & External Sync**:
+   * Cloud sync, local audio file import, and MIDI controller integration.

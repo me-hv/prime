@@ -122,6 +122,33 @@ PRIME is **not** a generic to-do list, habit tracker, or SaaS productivity board
 * **Database Backup & Export 4.0.0**:
   * Extended JSON export backing up all 10 Phase 4 models alongside Phase 1–3 data.
 
+### Phase 5: Progress & Artist DNA (`/progress` & `/progress/artist-dna`)
+* **Artist Development Dashboard (`/progress`)**:
+  * **Configurable Time-Range Filtering**: Full dashboard period scoping across 7 Days, 30 Days (default), 90 Days, 6 Months, 1 Year, and All Time (`ALL`).
+  * **Current Artist Focus & Milestone Linkages**: Overarching focus target with active progress metrics and milestone tracker.
+  * **Creative Momentum Engine**: Real-time velocity gauge (`HIGH`, `STEADY`, `REBUILDING`, `STARTING`) derived from activity frequency, streak health, and output volume.
+  * **Deterministic PRIME Progress Insights**: Algorithmic progress insights with severity/urgency color coding, underlying evidence tags, and direct 1-click action buttons routing to targeted exercises, writing studio, or study modules.
+  * **Multi-Discipline Output Time Series**: Day-by-day and period-by-period stacked visual bar charts of writing minutes, practice minutes, study minutes, and reflection time.
+  * **Skill Development Matrix**: Comprehensive matrix of all 40+ skills with practice frequencies (`High`, `Medium`, `Low`, `None`), completed session counters, average confidence & difficulty ratings, rising/declining/steady trend indicators, undertrained alerts, and direct links to deep-dive pages.
+  * **Finishing Health & Funnel Analysis**: Full-pipeline status breakdown (`Idea` -> `Concept` -> `Writing` -> `Demo` -> `Recording` -> `Mixing` -> `Mastering` -> `Finished` -> `Archived`), completion ratios, average days to finish, and **Stalled Songs Alert System** identifying inactive projects with instant action triggers.
+  * **Study → Practice & Create → Finish Gap Analyses**: Direct audits highlighting references studied without practice follow-up and drafts created without finishing pipeline advancement.
+  * **Strength & Weakness Signals**: Deterministic, evidence-backed signal cards showing proven artistic strengths alongside under-practiced or friction-heavy skills with direct drill launchers.
+* **Skill Deep-Dive Workspace (`/progress/skills/[id]`)**:
+  * Comprehensive anatomical analysis for any specific skill: historical practice volume, session log with effort/confidence ratings, curated drills catalog, associated track dissections, logged breakthroughs, related song/writing projects, linked bottlenecks, and recent reflection mentions.
+* **Artist DNA Workspace (`/progress/artist-dna`)**:
+  * **Artist Identity Statement**: Editable core artistic mission and sonic North Star with instant autosave.
+  * **Creative Values Engine**: Ranked list of core artistic values (e.g. *Lyrical Density*, *Sonic Distinctiveness*, *Emotional Honesty*) with custom additions and priority reordering.
+  * **Creative Preferences & Friction Audit**: Detailed workflow preferences across Lyricism vs Production, Writing Speed, Arrangement Style, Collaboration Preference, Optimal Working Hours, and Primary Creative Friction.
+  * **PRIME Observed Patterns with Honest Confidence**: Objective behavioral pattern recognition contrasting user self-image with real database evidence, rated by confidence level (*Insufficient Data*, *Emerging Pattern*, *Recurring Pattern*, *Strong Pattern*).
+  * **6 Descriptive Artist Dimensions**: Unscored descriptive spectrums across *Creator*, *Student*, *Practitioner*, *Finisher*, *Explorer*, and *Reflector*.
+  * **Before vs Now 90-Day Comparison**: Direct side-by-side comparison of creative practice volume, writing output, finishing rate, and study habits between the previous 90 days and today.
+  * **Unified Artist Evolution Timeline**: Chronological narrative feed of career milestones, breakthroughs, finished songs, and major project completions.
+* **Dashboard Integration & Search**:
+  * Subtle **Artist Growth** overview widget on `/` showing weekly practice volume, skill coverage, and quick access to Artist DNA.
+  * Universal workspace search extended to index all Skills and Artist DNA profile.
+* **Database Backup & Export 5.0.0**:
+  * Export schema updated to version `5.0.0` with full backup and restore compatibility for `ArtistDNAProfile`.
+
 ---
 
 ## 4. Tech Stack
@@ -181,37 +208,53 @@ prime/
 │   ├── ARCHITECTURE.md     # In-depth architectural blueprint
 │   └── ROADMAP.md          # 8-Phase long-term roadmap
 ├── prisma/
-│   ├── schema.prisma       # Prisma relational data model
+│   ├── schema.prisma       # Prisma relational data model (18 models)
 │   └── seed.ts             # Default artist starter seed data
 ├── src/
-│   ├── actions/            # Next.js Server Actions (CRUD & stats)
+│   ├── actions/            # Next.js Server Actions (CRUD & analytics)
 │   │   ├── activities.ts   # Creative activity queries & mutations
 │   │   ├── captures.ts     # Quick captures logic
+│   │   ├── create.ts       # Writing drafts, songs, and project actions
+│   │   ├── discover.ts     # Artist library, references, and study sessions
+│   │   ├── dna.ts          # Artist DNA profile operations
 │   │   ├── goals.ts        # Goals & milestone progress
 │   │   ├── missions.ts     # Daily single-mission operations
-│   │   ├── profile.ts      # Artist DNA & profile management
-│   │   └── stats.ts        # Streak calculations & cadence metrics
+│   │   ├── profile.ts      # Artist profile management
+│   │   ├── progress.ts     # Progress analytics, skill matrix & insights
+│   │   ├── reflect.ts      # Reflections, bottlenecks & milestones
+│   │   ├── search.ts       # Universal workspace search engine
+│   │   ├── stats.ts        # Streak calculations & cadence metrics
+│   │   └── train.ts        # Drill catalog & training session logs
 │   ├── app/                # Next.js App Router routes
-│   │   ├── api/export/     # Full JSON data backup endpoint
-│   │   ├── create/         # Creative studio workspace shell
-│   │   ├── discover/       # Song study & album analysis shell
-│   │   ├── progress/       # Output metrics & discipline charts
+│   │   ├── api/export/     # Full JSON data backup endpoint (v5.0.0)
+│   │   ├── create/         # Creative studio workspace & song lab
+│   │   ├── discover/       # Reference vault & track dissection studio
 │   │   ├── profile/        # Artist identity management
-│   │   ├── reflect/        # Journal & weekly audit shell
+│   │   ├── progress/       # Progress dashboard & skill matrix
+│   │   │   ├── artist-dna/ # Artist DNA workspace & evolution timeline
+│   │   │   └── skills/[id] # Skill deep-dive analytics
+│   │   ├── reflect/        # Retrospectives, bottlenecks & breakthroughs
 │   │   ├── settings/       # Themes, defaults, data export
-│   │   ├── train/          # Flow & lyric gym shell
+│   │   ├── train/          # Flow, writing, & beat gymnasium
 │   │   ├── globals.css     # Bespoke dark studio theme styling
 │   │   ├── layout.tsx      # Root layout with sidebar & providers
 │   │   └── page.tsx        # Command center dashboard
 │   ├── components/
-│   │   ├── dashboard/      # Mission, activity, goal, and streak cards
+│   │   ├── create/         # Writing studio, song editor, project board
+│   │   ├── dashboard/      # Mission, activity, goal, streak & growth cards
+│   │   ├── discover/       # Reference vault, study modal & listening diary
 │   │   ├── navigation/     # Sidebar, MobileNav, Global Quick Capture
-│   │   ├── shared/         # Reusable empty states
+│   │   ├── progress/       # Skill matrix, time series, finishing funnel
+│   │   │   ├── dna/        # Artist identity, values, patterns, dimensions
+│   │   │   └── skills/     # Skill detail cards & drill linkages
+│   │   ├── reflect/        # Daily retrospective, bottlenecks & timeline
+│   │   ├── shared/         # Reusable empty states & search modals
+│   │   ├── train/          # Metronome pocket gym, sprint timers, prompts
 │   │   └── ui/             # Button, Card, Modal, Input, Badge, Toast
 │   └── lib/
 │       ├── db.ts           # Prisma client singleton
 │       ├── types.ts        # Strongly-typed data models & configs
-│       └── utils.ts        # Date and style utility helpers
+│       └── utils.ts        # Date, time, and style utility helpers
 └── tailwind.config.ts      # Bespoke palette and shadows
 ```
 
@@ -219,17 +262,18 @@ prime/
 
 ## 7. Roadmap Preview
 
-* **Phase 1** — Foundation & Artist OS Shell *(Current)*
-* **Phase 2** — Creative Workspace (Songwriting lab, Rhyme mapping, Beat hub)
-* **Phase 3** — Training System (Freestyle drills, Metronome pocket gym, Syllable sprint)
-* **Phase 4** — Music Discovery & Study (Song anatomy, Album breakdown)
-* **Phase 5** — Reflection & Journaling (Voice journal, Weekly audit, Future letters)
-* **Phase 6** — Progress & Artist DNA (Flow fingerprint, Cadence analytics)
-* **Phase 7** — AI Coach & Deep Focus Shield (Anti-distraction, Creative sparring)
-* **Phase 8** — Deep Integrations & Advanced Audio Architecture
+* **Phase 1** — Foundation & Artist OS Shell *(Completed)*
+* **Phase 2** — Creative Workspace *(Completed)*
+* **Phase 3** — Training System *(Completed)*
+* **Phase 4** — Discovery & Reflection *(Completed)*
+* **Phase 5** — Progress & Artist DNA *(Completed)*
+* **Phase 6** — AI Sparring & Creative Partner
+* **Phase 7** — Deep Focus Shield & Session Flow
+* **Phase 8** — Deep Audio & Hardware Integrations
 
 ---
 
 ## 8. License
 
 Private / Personal Project — All rights reserved.
+
