@@ -19,13 +19,14 @@ PRIME is built incrementally across clearly defined phases to guarantee producti
 
 ---
 
-## Phase 2 — Creative Workspace
-* [ ] Distraction-free Markdown & Lyrical Songwriting Editor.
-* [ ] Structured Song Scaffolding (Intro, Verses, Hooks, Bridges, Outros).
-* [ ] Rhyme scheme color mapping (multi-syllabic matching and assonance highlighting).
-* [ ] Beat & Production catalog (BPM, Key, Stem checklist, Ableton/Logic session linking).
-* [ ] EP & Album tracklist sequencing board.
-* [ ] Quick Capture to Song Draft conversion flow.
+## Phase 2 — Creative Workspace *(Completed)*
+* [x] Distraction-free Markdown & Lyrical Songwriting Editor (`/create/write/[id]`).
+* [x] Structured Song Scaffolding with modular sections (`Intro`, `Verse`, `Hook`, `Bridge`, `Outro`, `Breakdown`).
+* [x] Live section reordering, section duplication, and live word count aggregation.
+* [x] Song metadata & production pipeline (BPM, Key, Genre, Mood, Status, Next Action).
+* [x] EP & Album tracklist sequencing board with dynamic track numbering (`/create/projects/[id]`).
+* [x] Frictionless 1-Click Quick Capture to Writing Draft or Song conversion modal.
+* [x] Universal workspace instant search across drafts, lyrics, songs, tracks, and raw captures.
 
 ---
 

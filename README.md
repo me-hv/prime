@@ -22,8 +22,9 @@ PRIME is **not** a generic to-do list, habit tracker, or SaaS productivity board
 
 ---
 
-## 3. Phase 1 Capabilities (Implemented)
+## 3. Implemented Capabilities
 
+### Phase 1: Foundation & Artist OS Shell
 * **Command Center Dashboard**:
   * Dynamic time-aware greeting and live date indicator.
   * **Current Focus**: Overarching artist north-star with linked active goals.
@@ -35,15 +36,32 @@ PRIME is **not** a generic to-do list, habit tracker, or SaaS productivity board
   * **Idea Vault**: Fast capture repository for lyrics, hooks, thoughts, and song concepts with 1-click clipboard copy.
 * **Global Quick Capture**: Accessible across the entire app via `+ CAPTURE` buttons, sidebar, or global keyboard shortcuts (`⌘K` / `Ctrl+K` / `C`).
 * **Artist Identity & DNA**: Profile manager for artist moniker, bio, multi-discipline tagging, current focus, and long-term vision.
-* **Interactive Section Shells**: Polished empty states and architecture previews for:
-  * `/create` — Writing Studio, Beat Hub, Song Catalog, Creative Projects.
-  * `/train` — Rap flow pocket drills, writing sprints, beat speed-drills, and rhyme mapping.
-  * `/discover` — Song anatomy breakdown, classic album study, artist lineage, literature.
-  * `/reflect` — Artist retrospective journal, voice notes, weekly reviews, future-self letters.
-  * `/progress` — Time allocation by discipline, total logged volume, and Artist DNA preview.
 * **Settings & Local Data Portability**: Theme selector, studio session defaults, and 1-click full database JSON export.
 * **True Persistence**: Zero-config SQLite database via Prisma ORM with seed data and server actions.
-* **Fully Responsive**: First-class mobile layout tested across 320px, 375px, 390px, 430px, tablet, and desktop viewports.
+* **Fully Responsive**: First-class mobile layout tested across mobile, tablet, and desktop viewports.
+
+### Phase 2: Creative Workspace (`/create`)
+* **Creative Hub & Recent Work**:
+  * Unified recent work stream showing writings, songs, and projects sorted by last edit.
+  * Tabbed workspace: Overview, Writing Studio, Song Workspace, Projects, and Creative Inbox.
+* **Creative Inbox & 1-Click Conversion**:
+  * Inbox management with status filters (`INBOX`, `IN_PROGRESS`, `ARCHIVED`).
+  * Instant modal conversion of raw captures directly into **Writing Drafts** or **Songs / Song Sections**.
+* **Writing Studio (`/create/write/[id]`)**:
+  * Focused, distraction-free drafting studio for verses, hooks, 16 bars, concepts, and poems.
+  * Live word & character counters with real-time feedback.
+  * Debounced background autosave (`Saving...` -> `Saved`) preserving typing flow.
+  * Focus mode toggle hiding sidebar and surrounding chrome.
+* **Modular Song Workspace (`/create/songs/[id]`)**:
+  * Song structure builder with modular sections (`Intro`, `Verse`, `Hook`, `Bridge`, `Outro`, `Pre-Chorus`, `Breakdown`, `Notes`).
+  * Live section reordering (move up/down), section duplication, collapse/expand toggles, and live word count aggregation.
+  * Metadata controls: BPM, Musical Key, Genre, Mood, Status pipeline (`Idea` -> `Writing` -> `Demo` -> `Recording` -> `Mixing` -> `Finished` -> `Archived`), Next Action prompt, and Project assignment.
+* **Project Sequencer & Tracklist Board (`/create/projects/[id]`)**:
+  * Multi-track EP, Album, Mixtape, and Beat Tape release planning.
+  * Drag/button tracklist sequencing with dynamic track numbering.
+  * Add songs directly to projects with instant status and word count rollups.
+* **Universal Creative Search**:
+  * Instant typeahead workspace search across drafts, lyrics, song titles, concepts, project tracks, and raw captures with keyboard navigation and direct routing.
 
 ---
 

@@ -32,7 +32,7 @@ export default async function HomePage() {
     getTodayMission(),
     getTodayActivities(),
     getGoals(),
-    getQuickCaptures(15),
+    getQuickCaptures({ limit: 15 }),
     getWeeklyOverview(),
     getDashboardStats(),
     getStreakMatrix(14),

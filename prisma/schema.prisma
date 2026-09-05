@@ -19,6 +19,9 @@ model User {
   creativeActivities CreativeActivity[]
   goals              Goal[]
   quickCaptures      QuickCapture[]
+  writingDocuments   WritingDocument[]
+  songs              Song[]
+  projects           CreativeProject[]
 }
 
 model Profile {
@@ -88,15 +91,113 @@ model Goal {
 }
 
 model QuickCapture {
-  id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  type      String   @default("IDEA")
-  content   String
-  tags      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        String   @default("IDEA")
+  title       String?
+  content     String
+  tags        String?
+  status      String   @default("INBOX") // INBOX, IN_PROGRESS, ARCHIVED
+  convertedTo String?  // WRITING, SONG
+  convertedId String?  // id of the created writing or song
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 
+  @@index([userId, status])
   @@index([userId, type])
   @@index([userId, createdAt])
+}
+
+model WritingDocument {
+  id             String   @id @default(cuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title          String   @default("Untitled Draft")
+  content        String   @default("")
+  type           String   @default("FREE_WRITE") // FREE_WRITE, BARS, HOOK, VERSE, POEM, IDEA, LYRIC, CONCEPT, OTHER
+  status         String   @default("DRAFT") // DRAFT, IN_PROGRESS, FINISHED, ARCHIVED
+  tags           String?
+  wordCount      Int      @default(0)
+  characterCount Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, type])
+  @@index([userId, updatedAt])
+}
+
+model Song {
+  id          String        @id @default(cuid())
+  userId      String
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title       String        @default("Untitled Song")
+  concept     String?
+  status      String        @default("IDEA") // IDEA, CONCEPT, WRITING, DEMO, RECORDING, MIXING, MASTERING, FINISHED, ARCHIVED
+  genre       String?
+  bpm         Int?
+  musicalKey  String?
+  mood        String?
+  nextAction  String?
+  tags        String?
+  notes       String?
+  wordCount   Int           @default(0)
+  sections    SongSection[]
+  projectSongs ProjectSong[]
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, updatedAt])
+}
+
+model SongSection {
+  id         String   @id @default(cuid())
+  songId     String
+  song       Song     @relation(fields: [songId], references: [id], onDelete: Cascade)
+  type       String   @default("VERSE") // HOOK, VERSE, BRIDGE, INTRO, OUTRO, PRE_CHORUS, NOTES, CUSTOM
+  name       String   @default("Section")
+  content    String   @default("")
+  orderIndex Int      @default(0)
+  collapsed  Boolean  @default(false)
+  wordCount  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([songId, orderIndex])
+}
+
+model CreativeProject {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  type         String        @default("EP") // ALBUM, EP, MIXTAPE, PLAYLIST, COLLECTION, PROJECT
+  status       String        @default("PLANNING") // IDEA, PLANNING, IN_PROGRESS, COMPLETED, ARCHIVED
+  targetDate   String?
+  notes        String?
+  coverUrl     String?
+  projectSongs ProjectSong[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, updatedAt])
+}
+
+model ProjectSong {
+  id          String          @id @default(cuid())
+  projectId   String
+  project     CreativeProject @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  songId      String
+  song        Song            @relation(fields: [songId], references: [id], onDelete: Cascade)
+  trackNumber Int             @default(1)
+  notes       String?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@unique([projectId, songId])
+  @@index([projectId, trackNumber])
 }

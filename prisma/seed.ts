@@ -4,9 +4,14 @@ import { format, subDays } from "date-fns";
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("Seeding PRIME database...");
+  console.log("Seeding PRIME database with Phase 1 & 2 models...");
 
   // Clean existing data
+  await prisma.projectSong.deleteMany();
+  await prisma.creativeProject.deleteMany();
+  await prisma.songSection.deleteMany();
+  await prisma.song.deleteMany();
+  await prisma.writingDocument.deleteMany();
   await prisma.quickCapture.deleteMany();
   await prisma.goal.deleteMany();
   await prisma.creativeActivity.deleteMany();
@@ -119,10 +124,9 @@ async function main() {
     ],
   });
 
-  // Create Creative Activities across the past days
+  // Create Creative Activities
   await prisma.creativeActivity.createMany({
     data: [
-      // Today's activities
       {
         userId: user.id,
         type: "WRITING",
@@ -141,7 +145,6 @@ async function main() {
         date: todayStr,
         completed: true,
       },
-      // Yesterday
       {
         userId: user.id,
         type: "PRODUCTION",
@@ -160,7 +163,6 @@ async function main() {
         date: yesterdayStr,
         completed: true,
       },
-      // 2 days ago
       {
         userId: user.id,
         type: "WRITING",
@@ -179,7 +181,6 @@ async function main() {
         date: twoDaysAgoStr,
         completed: true,
       },
-      // 3 days ago
       {
         userId: user.id,
         type: "PRODUCTION",
@@ -189,7 +190,6 @@ async function main() {
         date: threeDaysAgoStr,
         completed: true,
       },
-      // 4 days ago
       {
         userId: user.id,
         type: "READING",
@@ -199,7 +199,6 @@ async function main() {
         date: fourDaysAgoStr,
         completed: true,
       },
-      // 5 days ago
       {
         userId: user.id,
         type: "REFLECTION",
@@ -217,32 +216,250 @@ async function main() {
     data: [
       {
         userId: user.id,
+        title: "Cold Titanium Line",
         type: "LYRIC",
         content: "Cold titanium in the baseline / Turn the pressure into rhythm when they try to trace mine.",
         tags: "bars, verse-2, obsidian",
+        status: "INBOX",
       },
       {
         userId: user.id,
+        title: "Low Harmony Drop",
         type: "HOOK",
         content: "Melody idea: Low octave harmony entering on bar 3 with heavy reverb tail, dropping into a clean dry vocal.",
         tags: "arrangement, vocal, melody",
+        status: "IN_PROGRESS",
       },
       {
         userId: user.id,
+        title: "Zero Floor Concept",
         type: "SONG_IDEA",
         content: "Concept: 'Zero Floor' — A narrative about building from scratch when everyone thinks you started on the top floor.",
         tags: "concept, ep-track",
+        status: "INBOX",
       },
       {
         userId: user.id,
+        title: "Vinyl Crackle + 808 Layer",
         type: "IDEA",
         content: "Try sampling vinyl crackle layered behind a detuned 808 slide for the second drop.",
         tags: "production, 808",
+        status: "INBOX",
       },
     ],
   });
 
-  console.log("Database seeded successfully!");
+  // Phase 2: Create Writing Documents
+  await prisma.writingDocument.createMany({
+    data: [
+      {
+        userId: user.id,
+        title: "Late Night Stream: The Price of Craft",
+        content: `Nobody sees the hours in the quiet.
+When the screen is the only lantern in the room,
+and the drum loop repeats for the four-hundredth time.
+You think you're chasing perfection, but you're really chasing honesty.
+Every bar is a mirror you can't lie to.
+
+If the cadence doesn't land on the one,
+the emotion won't land on the chest.
+Keep the pencil sharp, strip the excess adjectives,
+let the cadence carry the weight of the confession.`,
+        type: "FREE_WRITE",
+        status: "IN_PROGRESS",
+        tags: "mindset, craft, raw",
+        wordCount: 77,
+        characterCount: 462,
+      },
+      {
+        userId: user.id,
+        title: "16 Bars: 'Architectural Blueprint'",
+        content: `Foundations in the concrete, blueprint in the bone
+Turned every single setback to a cornerstone
+They looking for the shortcut, I'm pacing out the steps
+Calibrated in the shadows, heavy with the depth.
+
+Syllables like masonry, rhythm like the steel
+Never had to fake the narrative to make it feel
+Pressure make diamonds or it crush you in the drift
+I took the whole weight and turned it to a lift.`,
+        type: "BARS",
+        status: "FINISHED",
+        tags: "bars, hard, precision, 16s",
+        wordCount: 68,
+        characterCount: 418,
+      },
+      {
+        userId: user.id,
+        title: "Hook Draft: 'All Gravity'",
+        content: `Pulling down the stars when the night gets cold
+Everything we built wasn't made to be sold
+Tell 'em watch the ground when the cadence breaks
+We ain't looking for applause, we just raising the stakes.`,
+        type: "HOOK",
+        status: "IN_PROGRESS",
+        tags: "hook, anthem, melodic",
+        wordCount: 38,
+        characterCount: 228,
+      },
+    ],
+  });
+
+  // Phase 2: Create Songs with modular sections
+  const song1 = await prisma.song.create({
+    data: {
+      userId: user.id,
+      title: "Obsidian Skies",
+      concept: "The journey of building art under crushing pressure, finding beauty in high-gravity environments.",
+      status: "WRITING",
+      genre: "Cinematic Hip-Hop",
+      bpm: 88,
+      musicalKey: "D Minor",
+      mood: "Dark, Relentless, Triumphant",
+      nextAction: "Complete the 2nd half of Verse 2 with internal rhymes",
+      tags: "ep-lead, dark, drums",
+      notes: "Feature a low sub bass drop on bar 9 of Verse 1. Keep the vocal completely centered and dry.",
+      wordCount: 165,
+    },
+  });
+
+  await prisma.songSection.createMany({
+    data: [
+      {
+        songId: song1.id,
+        type: "INTRO",
+        name: "Intro & Ambient Build",
+        content: "[Low pad swell in D Minor with vinyl hiss]\nYeah... PRIME OS.\nLet the tape roll.",
+        orderIndex: 0,
+        collapsed: false,
+        wordCount: 15,
+      },
+      {
+        songId: song1.id,
+        type: "HOOK",
+        name: "Main Hook",
+        content: `Underneath obsidian skies, we don't look down
+Turn the heavy metal into gold right through the sound
+Every single scar is a signature we signed
+Left the noise behind just to redesign the mind.`,
+        orderIndex: 1,
+        collapsed: false,
+        wordCount: 36,
+      },
+      {
+        songId: song1.id,
+        type: "VERSE",
+        name: "Verse 1 (16 Bars)",
+        content: `Stepping out the elevator at the highest floor
+Never had a blueprint knocking at the master door
+Iron in the furnace, friction on the vocal cord
+Turn the quiet hours into monuments we can't afford to lose.
+
+Calculated cadence with the heavy shoes
+Never gave a damn about the algorithm news
+Built the whole catalog block by solid block
+Now the rhythm ticking like an atomic clock.`,
+        orderIndex: 2,
+        collapsed: false,
+        wordCount: 68,
+      },
+      {
+        songId: song1.id,
+        type: "VERSE",
+        name: "Verse 2 (In Progress)",
+        content: `Cold titanium in the baseline
+Turn the pressure into rhythm when they try to trace mine
+Internal depravity colliding with the gravity
+Rebuilding all the shattered pieces of the sanity...`,
+        orderIndex: 3,
+        collapsed: false,
+        wordCount: 32,
+      },
+      {
+        songId: song1.id,
+        type: "OUTRO",
+        name: "Outro Fade",
+        content: "[808 sustained tail fades out into rain textures]",
+        orderIndex: 4,
+        collapsed: true,
+        wordCount: 8,
+      },
+    ],
+  });
+
+  const song2 = await prisma.song.create({
+    data: {
+      userId: user.id,
+      title: "Zero Floor",
+      concept: "Starting from absolute ground level when everyone assumes you had an easy head start.",
+      status: "CONCEPT",
+      genre: "Rap / Soul Sample",
+      bpm: 92,
+      musicalKey: "F Minor",
+      mood: "Soulful, Reflective, Gritty",
+      nextAction: "Write Verse 1 storytelling arc",
+      tags: "soul, sample, story",
+      wordCount: 42,
+    },
+  });
+
+  await prisma.songSection.createMany({
+    data: [
+      {
+        songId: song2.id,
+        type: "HOOK",
+        name: "Main Hook",
+        content: `They think I jumped in at the top floor
+Never saw the steps behind the back door
+Counted every penny on the cold tile
+Now we making every single mile worthwhile.`,
+        orderIndex: 0,
+        collapsed: false,
+        wordCount: 34,
+      },
+      {
+        songId: song2.id,
+        type: "NOTES",
+        name: "Concept Direction",
+        content: "Sample chopped vocal flip from old 70s soul record. Keep drums unquantized with MPC swing.",
+        orderIndex: 1,
+        collapsed: false,
+        wordCount: 16,
+      },
+    ],
+  });
+
+  // Phase 2: Create Creative Project & attach Songs
+  const project = await prisma.creativeProject.create({
+    data: {
+      userId: user.id,
+      title: "THE OBSIDIAN TAPE",
+      description: "6-Track debut EP showcasing dark atmospheric production, dense lyrical storytelling, and cinematic cadences.",
+      type: "EP",
+      status: "IN_PROGRESS",
+      targetDate: "2026-11-30",
+      notes: "Release strategy: Track 1 (Intro) → Track 2 (Obsidian Skies) → Track 3 (Zero Floor).",
+    },
+  });
+
+  await prisma.projectSong.createMany({
+    data: [
+      {
+        projectId: project.id,
+        songId: song1.id,
+        trackNumber: 1,
+        notes: "Lead single candidate",
+      },
+      {
+        projectId: project.id,
+        songId: song2.id,
+        trackNumber: 2,
+        notes: "Soulful midpoint contrast",
+      },
+    ],
+  });
+
+  console.log("Phase 1 & 2 Database seeded successfully!");
 }
 
 main()

@@ -44,12 +44,17 @@ This document details the architectural principles, data schema, component desig
 ## 3. Relational Data Models
 
 ### Entity Relationship Overview
-
+ 
 * **`User`** (1) ─── (1) **`Profile`**: Core artist identity, moniker, vision, and disciplines.
 * **`User`** (1) ─── (N) **`DailyMission`**: Unique constraint on `[userId, date]`, enforcing ONE primary mission per day.
 * **`User`** (1) ─── (N) **`CreativeActivity`**: Real creative activity logs with discipline, duration, and date.
 * **`User`** (1) ─── (N) **`Goal`**: Multi-discipline targets with unit, category, and milestone progress.
-* **`User`** (1) ─── (N) **`QuickCapture`**: Categorized inspiration vault (lyrics, hooks, thoughts, concepts).
+* **`User`** (1) ─── (N) **`QuickCapture`**: Categorized inspiration vault (lyrics, hooks, thoughts, concepts) with status and conversion linkages.
+* **`User`** (1) ─── (N) **`WritingDocument`**: Dedicated standalone lyric and verse drafting studio documents (`VERSE`, `HOOK`, `BARS_16`, `FREE_WRITE`, `CONCEPT`, `POEM`).
+* **`User`** (1) ─── (N) **`Song`**: Full-structured multi-section songwriting workspace (`Idea` -> `Writing` -> `Demo` -> `Recording` -> `Mixing` -> `Finished`).
+* **`Song`** (1) ─── (N) **`SongSection`**: Ordered modular building blocks (`HOOK`, `VERSE`, `BRIDGE`, `INTRO`, `OUTRO`, `PRE_CHORUS`, `BREAKDOWN`, `NOTES`).
+* **`User`** (1) ─── (N) **`CreativeProject`**: Collection releases (`EP`, `ALBUM`, `BEAT_TAPE`, `MIXTAPE`, `CONCEPT_SUITE`).
+* **`CreativeProject`** (N) ─── (N) **`Song`** via **`ProjectSong`**: Explicit tracklist sequencing board with `trackNumber`.
 
 ---
 
