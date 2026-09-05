@@ -25,6 +25,16 @@ model User {
   trainingSessions   TrainingSession[]
   rhymeChains        RhymeChain[]
   vocabularyEntries  VocabularyEntry[]
+  artists            Artist[]
+  artistReferences   ArtistReference[]
+  studySessions      StudySession[]
+  albumStudies       AlbumStudy[]
+  listeningEntries   ListeningEntry[]
+  dailyReflections   DailyReflection[]
+  weeklyReviews      WeeklyReview[]
+  bottlenecks        Bottleneck[]
+  breakthroughs      Breakthrough[]
+  milestones         Milestone[]
 }
 
 model Profile {
@@ -149,6 +159,7 @@ model Song {
   wordCount   Int           @default(0)
   sections    SongSection[]
   projectSongs ProjectSong[]
+  breakthroughs Breakthrough[]
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
 
@@ -217,6 +228,9 @@ model Skill {
   category    String          // RAP, WRITING, PRODUCTION, EAR_TRAINING, VOCABULARY
   description String?
   exercises   ExerciseSkill[]
+  studySessions StudySession[]
+  bottlenecks Bottleneck[]
+  breakthroughs Breakthrough[]
   createdAt   DateTime        @default(now())
   updatedAt   DateTime        @updatedAt
 
@@ -279,6 +293,7 @@ model TrainingSession {
   writingDocument   WritingDocument?   @relation(fields: [writingDocumentId], references: [id], onDelete: SetNull)
   rhymeChains       RhymeChain[]
   vocabularyEntries VocabularyEntry[]
+  breakthroughs     Breakthrough[]
   createdAt         DateTime           @default(now())
   updatedAt         DateTime           @updatedAt
 
@@ -333,4 +348,257 @@ model VocabularyEntry {
 
   @@index([userId, word])
   @@index([userId, createdAt])
+}
+
+// ==========================================
+// Phase 4: Discovery & Reflection Models
+// ==========================================
+
+model Artist {
+  id            String            @id @default(cuid())
+  userId        String
+  user          User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name          String
+  role          String            @default("Rapper / Songwriter")
+  notes         String?
+  status        String            @default("STUDYING") // DISCOVERED, STUDYING, ACTIVE_REFERENCE, ARCHIVED
+  genres        String?           // Comma-separated or JSON list
+  tags          String?
+  favorite      Boolean           @default(false)
+  references    ArtistReference[]
+  studySessions StudySession[]
+  createdAt     DateTime          @default(now())
+  updatedAt     DateTime          @updatedAt
+
+  @@index([userId, status])
+  @@index([userId, favorite])
+  @@index([userId, name])
+}
+
+model ArtistReference {
+  id               String            @id @default(cuid())
+  userId           String
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type             String            @default("SONG") // SONG, ALBUM, ARTIST, BOOK, ARTICLE, INTERVIEW, VIDEO, OTHER
+  title            String
+  creator          String            // Artist, Author, Producer
+  artistId         String?
+  artist           Artist?           @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  year             Int?
+  url              String?
+  album            String?
+  genre            String?
+  notes            String?
+  tags             String?
+  favorite         Boolean           @default(false)
+  studySessions    StudySession[]
+  albumStudies     AlbumStudy[]
+  listeningEntries ListeningEntry[]
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@index([userId, type])
+  @@index([userId, favorite])
+  @@index([userId, artistId])
+}
+
+model StudySession {
+  id              String           @id @default(cuid())
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referenceId     String?
+  reference       ArtistReference? @relation(fields: [referenceId], references: [id], onDelete: SetNull)
+  artistId        String?
+  artist          Artist?          @relation(fields: [artistId], references: [id], onDelete: SetNull)
+  focus           String           @default("FLOW") // FLOW, CADENCE, WRITING, STORYTELLING, WORDPLAY, RHYME, HOOKS, DELIVERY, PRODUCTION, ARRANGEMENT, SAMPLING, SOUND_SELECTION, VOCABULARY, CONCEPT
+  customFocus     String?
+  startedAt       DateTime         @default(now())
+  completedAt     DateTime?
+  durationSeconds Int              @default(0)
+  observations    String?
+  techniques      String?
+  favoriteSection String?
+  whyItWorks      String?
+  whatSurprisedMe String?
+  whatILearned    String?
+  experimentIdea  String?
+  takeaway        String?
+  rating          Int?             // 1-5
+  skillId         String?
+  skill           Skill?           @relation(fields: [skillId], references: [id], onDelete: SetNull)
+  breakthroughs   Breakthrough[]
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([userId, focus])
+  @@index([userId, createdAt])
+  @@index([referenceId])
+  @@index([artistId])
+}
+
+model AlbumStudy {
+  id                  String          @id @default(cuid())
+  userId              String
+  user                User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referenceId         String
+  reference           ArtistReference @relation(fields: [referenceId], references: [id], onDelete: Cascade)
+  overallImpression   String?
+  themes              String?
+  productionNotes     String?
+  writingNotes        String?
+  sequencingNotes     String?
+  standoutTracks      String?
+  weakestTrack        String?
+  recurringTechniques String?
+  lessons             String?
+  experimentIdeas     String?
+  rating              Int?            // 1-5
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  @@index([userId, referenceId])
+  @@index([userId, createdAt])
+}
+
+model ListeningEntry {
+  id              String           @id @default(cuid())
+  userId          String
+  user            User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  referenceId     String?
+  reference       ArtistReference? @relation(fields: [referenceId], references: [id], onDelete: SetNull)
+  title           String
+  creator         String
+  date            String           // YYYY-MM-DD
+  durationMinutes Int              @default(15)
+  purpose         String           @default("STUDY") // CASUAL, INSPIRATION, STUDY, PRODUCTION, WRITING, FLOW, RESEARCH
+  mood            String?
+  reaction        String?
+  studyWorthy     Boolean          @default(false)
+  notes           String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, purpose])
+  @@index([userId, studyWorthy])
+}
+
+model DailyReflection {
+  id               String   @id @default(cuid())
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date             String   // YYYY-MM-DD
+  // Creation
+  created          String?
+  finished         String?
+  unfinished       String?
+  // Practice
+  practiced        String?
+  skillWorked      String?
+  difficulties     String?
+  // Learning
+  studied          String?
+  learned          String?
+  // Mindset
+  energy           String?
+  drained          String?
+  distractions     String?
+  // Creative Insight
+  clicked          String?
+  surprised        String?
+  // Tomorrow
+  continueItem     String?
+  improveItem      String?
+  tomorrowPriority String?
+  // Context snapshot (JSON)
+  snapshotStats    String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+
+  @@unique([userId, date])
+  @@index([userId, date])
+}
+
+model WeeklyReview {
+  id                String   @id @default(cuid())
+  userId            String
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekStart         String   // YYYY-MM-DD
+  weekEnd           String   // YYYY-MM-DD
+  outputNotes       String?
+  learningNotes     String?
+  weaknessesNotes   String?
+  momentumNotes     String?
+  breakthroughNotes String?
+  nextFocus         String?
+  statsSummary      String?  // JSON summary
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@unique([userId, weekStart])
+  @@index([userId, weekStart])
+}
+
+model Bottleneck {
+  id                String    @id @default(cuid())
+  userId            String
+  user              User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category          String    @default("FINISHING") // DISCIPLINE, DISTRACTION, WRITING, FLOW, VOCABULARY, RHYME, STORYTELLING, PRODUCTION, SONG_STRUCTURE, FINISHING, CONFIDENCE, TIME, ENERGY, OTHER
+  description       String
+  severity          Int       @default(3) // 1-5
+  date              String    // YYYY-MM-DD
+  attemptedSolution String?
+  result            String?
+  resolved          Boolean   @default(false)
+  resolvedAt        DateTime?
+  skillId           String?
+  skill             Skill?    @relation(fields: [skillId], references: [id], onDelete: SetNull)
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([userId, category])
+  @@index([userId, resolved])
+}
+
+model Breakthrough {
+  id                String           @id @default(cuid())
+  userId            String
+  user              User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title             String
+  category          String           @default("FLOW") // FLOW, WRITING, PRODUCTION, MINDSET, PROCESS, TECHNIQUE, OTHER
+  date              String           // YYYY-MM-DD
+  description       String
+  cause             String?
+  changeEffect      String?
+  skillId           String?
+  skill             Skill?           @relation(fields: [skillId], references: [id], onDelete: SetNull)
+  songId            String?
+  song              Song?            @relation(fields: [songId], references: [id], onDelete: SetNull)
+  trainingSessionId String?
+  trainingSession   TrainingSession? @relation(fields: [trainingSessionId], references: [id], onDelete: SetNull)
+  studySessionId    String?
+  studySession      StudySession?    @relation(fields: [studySessionId], references: [id], onDelete: SetNull)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([userId, category])
+  @@index([userId, date])
+}
+
+model Milestone {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title        String
+  date         String   // YYYY-MM-DD
+  category     String   @default("CREATION") // RELEASE, CREATION, PERFORMANCE, SKILL, MILESTONE, CAREER
+  description  String
+  significance String?
+  lessons      String?
+  nextStep     String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId, date])
+  @@index([userId, category])
 }

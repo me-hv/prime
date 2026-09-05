@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-import { format, subDays } from "date-fns";
+import { format, subDays, startOfWeek, endOfWeek } from "date-fns";
 
 const prisma = new PrismaClient();
 
@@ -7,6 +7,16 @@ async function main() {
   console.log("Seeding PRIME database with Phase 1, 2 & 3 models...");
 
   // Clean existing data in reverse relational order
+  await prisma.milestone.deleteMany();
+  await prisma.breakthrough.deleteMany();
+  await prisma.bottleneck.deleteMany();
+  await prisma.weeklyReview.deleteMany();
+  await prisma.dailyReflection.deleteMany();
+  await prisma.listeningEntry.deleteMany();
+  await prisma.albumStudy.deleteMany();
+  await prisma.studySession.deleteMany();
+  await prisma.artistReference.deleteMany();
+  await prisma.artist.deleteMany();
   await prisma.vocabularyEntry.deleteMany();
   await prisma.rhymeEntry.deleteMany();
   await prisma.rhymeChain.deleteMany();
@@ -1357,7 +1367,399 @@ Turned the isolation into something severe.`,
     });
   }
 
-  console.log("Phase 1, 2 & 3 Database seeded successfully with 48 curated drills & full artist catalog!");
+  // ==========================================
+  // Phase 4: Discovery & Reflection Seed Data
+  // ==========================================
+  console.log("Seeding Phase 4 Discovery & Reflection models...");
+
+  // 1. Reference Artists
+  const kendrick = await prisma.artist.create({
+    data: {
+      userId: user.id,
+      name: "Kendrick Lamar",
+      role: "Rapper / Songwriter / Conceptualist",
+      status: "ACTIVE_REFERENCE",
+      genres: "Conscious Rap, Jazz Rap, West Coast Hip-Hop",
+      tags: "cadence switches, thematic worldbuilding, vocal inflection",
+      favorite: true,
+      notes: "Master of narrative vulnerability, multi-perspective writing, and abrupt dynamic cadence pivots.",
+    },
+  });
+
+  const andre = await prisma.artist.create({
+    data: {
+      userId: user.id,
+      name: "André 3000",
+      role: "Rapper / Songwriter / Multi-instrumentalist",
+      status: "ACTIVE_REFERENCE",
+      genres: "Southern Hip-Hop, Funk, Experimental",
+      tags: "pocket elasticity, melody within rap, storytelling",
+      favorite: true,
+      notes: "Effortlessly swings between behind-the-beat conversational delivery and breakneck multi-syllabic runs.",
+    },
+  });
+
+  const doom = await prisma.artist.create({
+    data: {
+      userId: user.id,
+      name: "MF DOOM",
+      role: "Rapper / Producer",
+      status: "STUDYING",
+      genres: "Abstract Hip-Hop, Boom Bap",
+      tags: "internal rhyme density, compound rhymes, oblique wordplay",
+      favorite: true,
+      notes: "Rhymes entire sentences with matching vowel schemes without sacrificing vivid surrealist imagery.",
+    },
+  });
+
+  const dilla = await prisma.artist.create({
+    data: {
+      userId: user.id,
+      name: "J Dilla",
+      role: "Music Producer / Beatmaker",
+      status: "ACTIVE_REFERENCE",
+      genres: "Soul Sampling, Instrumental Hip-Hop, Neo-Soul",
+      tags: "swing quantization off, sample chop, sub bass pocket",
+      favorite: true,
+      notes: "Humanized MPC micro-timing and unquantized grooves that defined the modern producer aesthetic.",
+    },
+  });
+
+  const rubin = await prisma.artist.create({
+    data: {
+      userId: user.id,
+      name: "Rick Rubin",
+      role: "Creative Producer / Author",
+      status: "STUDYING",
+      genres: "Philosophy of Art, Production Architecture",
+      tags: "reduction, creative instinct, subverting doubt",
+      favorite: false,
+      notes: "Reductionist philosophy: strip away non-essential elements until only the purest artistic impulse remains.",
+    },
+  });
+
+  // 2. Artist References
+  const dnaRef = await prisma.artistReference.create({
+    data: {
+      userId: user.id,
+      artistId: kendrick.id,
+      type: "SONG",
+      title: "DNA.",
+      creator: "Kendrick Lamar",
+      album: "DAMN.",
+      year: 2017,
+      genre: "Hip-Hop / Hardcore Rap",
+      favorite: true,
+      url: "https://open.spotify.com/track/6HZILIRieu8S0iqY8kIKhj",
+      notes: "Two contrasting sections: disciplined metric cadence in part 1 followed by unhinged acapella/808 aggression in part 2.",
+      tags: "cadence, contrast, delivery, 808s",
+    },
+  });
+
+  const samDotRef = await prisma.artistReference.create({
+    data: {
+      userId: user.id,
+      artistId: kendrick.id,
+      type: "SONG",
+      title: "Sing About Me, I'm Dying of Thirst",
+      creator: "Kendrick Lamar",
+      album: "good kid, m.A.A.d city",
+      year: 2012,
+      genre: "Conscious Rap / Storytelling",
+      favorite: true,
+      notes: "12-minute 3-part epic written from three distinct character viewpoints with gunshot fading techniques.",
+      tags: "storytelling, character perspective, narrative arc",
+    },
+  });
+
+  const tpabRef = await prisma.artistReference.create({
+    data: {
+      userId: user.id,
+      artistId: kendrick.id,
+      type: "ALBUM",
+      title: "To Pimp a Butterfly",
+      creator: "Kendrick Lamar",
+      year: 2015,
+      genre: "Jazz Rap / Funk / Spoken Word",
+      favorite: true,
+      notes: "Masterwork in album cohesion: recurring spoken-word poem expanding after each song into a Tupac interview climax.",
+      tags: "album architecture, recurring poem, live instrumentation",
+    },
+  });
+
+  const accordionRef = await prisma.artistReference.create({
+    data: {
+      userId: user.id,
+      artistId: doom.id,
+      type: "SONG",
+      title: "Accordion",
+      creator: "Madvillain (MF DOOM & Madlib)",
+      album: "Madvillainy",
+      year: 2004,
+      genre: "Underground Hip-Hop",
+      favorite: true,
+      notes: "Daedelus accordion loop with no chorus, 2 verses of continuous internal multisyllabic rhyme stringing.",
+      tags: "internal rhyme, multisyllabic, sample flip",
+    },
+  });
+
+  const creativeActRef = await prisma.artistReference.create({
+    data: {
+      userId: user.id,
+      artistId: rubin.id,
+      type: "BOOK",
+      title: "The Creative Act: A Way of Being",
+      creator: "Rick Rubin",
+      year: 2023,
+      genre: "Philosophy & Creativity",
+      favorite: true,
+      notes: "Chapters on Tuning In, Beginners Mind, The Vessel, and Overcoming Creative Doubt.",
+      tags: "creative mindset, daily ritual, listening",
+    },
+  });
+
+  // 3. Track Study Sessions
+  await prisma.studySession.create({
+    data: {
+      userId: user.id,
+      referenceId: dnaRef.id,
+      artistId: kendrick.id,
+      focus: "CADENCE",
+      durationSeconds: 1200,
+      startedAt: subDays(new Date(), 3),
+      completedAt: subDays(new Date(), 3),
+      observations: "The first 16 bars feature restrained metric division where syllables hit squarely on eighth notes. At bar 17 the beat collapses and vocal delivery becomes frantic.",
+      techniques: "Abrupt cadence acceleration, dynamic contrast without pitch change, conversational pauses between punches.",
+      favoriteSection: "Beat switch at 2:05 (Fox News sample into rapid fire second verse)",
+      whyItWorks: "Extreme dynamic restraint in section 1 makes the chaotic energy of section 2 feel explosive.",
+      whatSurprisedMe: "How little instrumentation is active during the heaviest vocal moments.",
+      whatILearned: "Contrast between rigid pocket and chaotic freestyle cadence creates maximum tension.",
+      experimentIdea: "Write a 16-bar verse where bar 1-8 uses strict 4-syllable rhyme cadence, then bar 9-16 doubles speed.",
+      takeaway: "Mastery of cadence is about knowing when to break your own pattern.",
+      rating: 5,
+    },
+  });
+
+  await prisma.studySession.create({
+    data: {
+      userId: user.id,
+      referenceId: accordionRef.id,
+      artistId: doom.id,
+      focus: "RHYME",
+      durationSeconds: 900,
+      startedAt: subDays(new Date(), 1),
+      completedAt: subDays(new Date(), 1),
+      observations: "DOOM weaves 3-syllable slant rhymes across consecutive lines without forcing sentence structure.",
+      techniques: "Compound vowel rhyming ('holding microphone' / 'golden cyclone'), cross-line enjambment.",
+      favoriteSection: "Opening 4 bars: 'Living off borrowed time, the clock ticks faster...'",
+      whyItWorks: "Assonance and consonant grouping allow lines to flow naturally without predictable end rhymes.",
+      whatSurprisedMe: "How conversational the cadence feels despite mathematically dense rhyme schemes.",
+      whatILearned: "Focus on matching vowel patterns rather than exact spelling to unlock complex multisyllables.",
+      experimentIdea: "Build a 6-word multisyllabic rhyme chain around the vowel sequence 'A-I-O' and draft 8 bars.",
+      takeaway: "Internal rhyme creates rhythmic propulsion even over slow, unquantized beats.",
+      rating: 5,
+    },
+  });
+
+  // 4. Album Architecture Studies
+  await prisma.albumStudy.create({
+    data: {
+      userId: user.id,
+      referenceId: tpabRef.id,
+      overallImpression: "A monumental body of work that functions as a single continuous musical and philosophical journey.",
+      themes: "Self-worth, survivor's guilt, institutional racism, spiritual transformation, artistic responsibility.",
+      productionNotes: "Live jazz rhythm sections (Terrace Martin, Thundercat, Robert Glasper) layered over dusty hip-hop drum breaks.",
+      writingNotes: "Spoken-word poem accumulates line by line across tracks, concluding with an interview with Tupac Shakur.",
+      sequencingNotes: "High-energy funk ('King Kunta') followed by dark introspection ('Institutionalized') creating an emotional rollercoaster.",
+      standoutTracks: "Wesley's Theory, These Walls, The Blacker the Berry, Mortal Man",
+      weakestTrack: "Hood Politics (slight lull in sequencing, though still strong)",
+      recurringTechniques: "Recurring leitmotif poem, vocal pitch-shifting to represent psychological distress, live horns.",
+      lessons: "A great album has a unifying sonic architecture and an overarching conceptual question it seeks to resolve.",
+      experimentIdeas: "Create a 3-track mini-suite where a 4-line spoken mantra recurs in different musical keys.",
+      rating: 5,
+    },
+  });
+
+  // 5. Listening Diary Entries
+  await prisma.listeningEntry.createMany({
+    data: [
+      {
+        userId: user.id,
+        referenceId: dnaRef.id,
+        title: "DNA.",
+        creator: "Kendrick Lamar",
+        date: todayStr,
+        durationMinutes: 15,
+        purpose: "FLOW",
+        mood: "Fired up / Focused",
+        reaction: "The vocal inflection in verse 2 is visceral and completely locked to the 808 transient.",
+        studyWorthy: true,
+        notes: "Study the breath placement between bar 8 and 12.",
+      },
+      {
+        userId: user.id,
+        referenceId: accordionRef.id,
+        title: "Accordion",
+        creator: "Madvillain",
+        date: yesterdayStr,
+        durationMinutes: 20,
+        purpose: "STUDY",
+        mood: "Analytical",
+        reaction: "Incredible demonstration of internal multi-syllabic rhyme weaving over a loop.",
+        studyWorthy: true,
+        notes: "Logged full track dissection in Study Vault.",
+      },
+      {
+        userId: user.id,
+        title: "Aquemini",
+        creator: "OutKast",
+        date: twoDaysAgoStr,
+        durationMinutes: 25,
+        purpose: "WRITING",
+        mood: "Inspired",
+        reaction: "André 3000's closing verse represents peak conversational lyricism.",
+        studyWorthy: true,
+        notes: "'My mind warps and bends, floats the wind, count to ten...'",
+      },
+    ],
+  });
+
+  // 6. Daily Reflections
+  await prisma.dailyReflection.create({
+    data: {
+      userId: user.id,
+      date: yesterdayStr,
+      created: "Drafted 16 bars for Track 01 'Obsidian Skies' and structured demo chorus.",
+      finished: "Completed 10-Minute Rapid Writing Sprint without stopping.",
+      unfinished: "Need to refine the vocal cadence on the transition between verse 1 and hook.",
+      practiced: "30 minutes metronome pocket syncopation drills at 90 BPM.",
+      skillWorked: "Pocket Mastery & Cadence Variation",
+      difficulties: "Rushing the delivery on fast 16th-note triplets on bar 9.",
+      studied: "Dissected MF DOOM's internal rhyme schemes on 'Accordion'.",
+      learned: "Vowel assonance creates natural bounce without forcing rigid end rhymes.",
+      energy: "Writing early in the morning before looking at email gave massive momentum.",
+      drained: "Phone notifications during the afternoon studio session.",
+      distractions: "Checked social media between vocal takes.",
+      clicked: "Realized the hook melody works better with half as many words.",
+      surprised: "How fast the 10-minute sprint draft came together when zero editing was allowed.",
+      continueItem: "Daily 10-minute morning sprint habit.",
+      improveItem: "Put phone on airplane mode during vocal tracking.",
+      tomorrowPriority: "Finish Verse 2 of 'Obsidian Skies' with 4-syllable rhyme schemes.",
+      snapshotStats: JSON.stringify({
+        writingDraftsCount: 2,
+        trainingMinutes: 30,
+        exercisesCompletedCount: 2,
+        studySessionsCount: 1,
+        songsUpdatedCount: 1,
+        totalCreativeMinutes: 65,
+      }),
+    },
+  });
+
+  // 7. Weekly Reviews
+  await prisma.weeklyReview.create({
+    data: {
+      userId: user.id,
+      weekStart: format(startOfWeek(subDays(new Date(), 7), { weekStartsOn: 1 }), "yyyy-MM-dd"),
+      weekEnd: format(endOfWeek(subDays(new Date(), 7), { weekStartsOn: 1 }), "yyyy-MM-dd"),
+      outputNotes: "Completed 4 writing sprint drafts, locked in the arrangement for 2 EP tracks, and finished the core vocal structure for 'Obsidian Skies'.",
+      learningNotes: "Studied 3 classic masterworks (Kendrick, DOOM, OutKast). Understood how dynamic restraint heightens explosive verses.",
+      weaknessesNotes: "Struggled with finishing second verses — perfectionism causes hesitation when changing cadence.",
+      momentumNotes: "10-minute rapid sprints in the morning eliminated writer's block. The metronome gym kept my pocket tight.",
+      breakthroughNotes: "Discovered behind-the-beat vocal delivery pocket; everything grooves significantly harder.",
+      nextFocus: "Dedicate the upcoming week to song completion & verse 2 finalization across all EP tracks.",
+      statsSummary: JSON.stringify({
+        totalMinutesPracticed: 145,
+        totalDrillsCompleted: 9,
+        totalWritingsCreated: 4,
+        totalReferencesStudied: 3,
+        totalSongsFinished: 1,
+        mostPracticedCategory: "RAP & FLOW",
+        leastPracticedCategory: "STORYTELLING",
+        recurringBottleneck: "FINISHING: Hesitation on second verses",
+        suggestedFocus: "Song Completion & 16-Bar Finalization",
+      }),
+    },
+  });
+
+  // 8. Bottlenecks
+  await prisma.bottleneck.createMany({
+    data: [
+      {
+        userId: user.id,
+        category: "FINISHING",
+        description: "I start songs with high energy hooks but slow down on verse 2 due to perfectionist overthinking.",
+        severity: 4,
+        date: todayStr,
+        attemptedSolution: "Enforce 10-minute rapid 16-bar sprint rule with zero stopping or editing.",
+        result: "Drafted 2 full verses in 20 minutes without getting stuck.",
+        resolved: false,
+      },
+      {
+        userId: user.id,
+        category: "FLOW",
+        description: "Tendency to rush ahead of the snare during fast 140 BPM trap cadences.",
+        severity: 3,
+        date: subDays(new Date(), 4).toISOString().split("T")[0],
+        attemptedSolution: "Practiced with Pocket Gym metronome at 70 BPM (half-time click) to anchor delivery.",
+        result: "Pocket feels locked and relaxed now.",
+        resolved: true,
+        resolvedAt: new Date(),
+      },
+    ],
+  });
+
+  // 9. Breakthroughs
+  await prisma.breakthrough.createMany({
+    data: [
+      {
+        userId: user.id,
+        title: "Behind-The-Beat Delivery Pocket",
+        category: "FLOW",
+        date: subDays(new Date(), 2).toISOString().split("T")[0],
+        description: "Discovered that dragging my vocal delivery slightly behind the metronome grid creates an infectious bounce.",
+        cause: "Studying André 3000 and practicing with subdivision metronome clicks.",
+        changeEffect: "All future verses will intentionally ride the back of the pocket rather than rushing the beat.",
+      },
+      {
+        userId: user.id,
+        title: "Vowel-Matrix Slant Rhyming",
+        category: "WRITING",
+        date: subDays(new Date(), 5).toISOString().split("T")[0],
+        description: "Matching internal vowel sounds across words rather than exact spelling eliminates rhyming blocks.",
+        cause: "Building multisyllabic rhyme matrices in the Rhyme Vault.",
+        changeEffect: "Expanded rhyme palette by 300% without cheesy exact rhymes.",
+      },
+    ],
+  });
+
+  // 10. Milestones
+  await prisma.milestone.createMany({
+    data: [
+      {
+        userId: user.id,
+        title: "Completed First 5-Track Body of Work Writing & Demos",
+        date: subDays(new Date(), 10).toISOString().split("T")[0],
+        category: "CREATION",
+        description: "Wrote and demo-tracked all 5 songs for debut EP 'PRIME TRANSMISSIONS'.",
+        significance: "First time completing a coherent, themed body of work from start to finish without abandoning tracks.",
+        lessons: "Consistency and daily rapid sprints beat waiting for spontaneous inspiration.",
+        nextStep: "Begin final vocal tracking and mixing passes.",
+      },
+      {
+        userId: user.id,
+        title: "14-Day Unbroken Creative Streak in PRIME",
+        date: todayStr,
+        category: "SKILL",
+        description: "Logged deliberate practice, writing, and study sessions every single day for two straight weeks.",
+        significance: "Proved that artist identity is built on daily studio habits rather than occasional inspiration.",
+        lessons: "The system creates the artist.",
+        nextStep: "Maintain streak through Phase 4 and into release.",
+      },
+    ],
+  });
+
+  console.log("Phase 1, 2, 3 & 4 Database seeded successfully with full training, study vault, and reflection diagnostic models!");
 }
 
 main()

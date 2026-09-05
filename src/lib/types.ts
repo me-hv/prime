@@ -374,7 +374,18 @@ export interface SearchItemResult {
   id: string;
   title: string;
   subtitle: string;
-  type: "WRITING" | "SONG" | "PROJECT" | "CAPTURE";
+  type:
+    | "WRITING"
+    | "SONG"
+    | "PROJECT"
+    | "CAPTURE"
+    | "ARTIST"
+    | "REFERENCE"
+    | "STUDY"
+    | "REFLECTION"
+    | "BOTTLENECK"
+    | "BREAKTHROUGH"
+    | "MILESTONE";
   categoryBadge: string;
   href: string;
   updatedAt: string;
@@ -618,4 +629,600 @@ export interface TrainingStatsData {
   skillsTrainedCount: number;
   totalPracticeMinutes: number;
 }
+
+// ==========================================
+// Phase 4: Discovery & Reflection Types
+// ==========================================
+
+export type ArtistStatus =
+  | "DISCOVERED"
+  | "STUDYING"
+  | "ACTIVE_REFERENCE"
+  | "ARCHIVED";
+
+export const ARTIST_STATUS_CONFIGS: Record<
+  ArtistStatus,
+  { label: string; badgeClass: string }
+> = {
+  DISCOVERED: {
+    label: "Discovered",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+  },
+  STUDYING: {
+    label: "Actively Studying",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+  },
+  ACTIVE_REFERENCE: {
+    label: "Active Reference",
+    badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+  },
+  ARCHIVED: {
+    label: "Archived",
+    badgeClass: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
+  },
+};
+
+export type ReferenceType =
+  | "SONG"
+  | "ALBUM"
+  | "ARTIST"
+  | "BOOK"
+  | "ARTICLE"
+  | "INTERVIEW"
+  | "VIDEO"
+  | "OTHER";
+
+export const REFERENCE_TYPE_CONFIGS: Record<
+  ReferenceType,
+  { label: string; iconName: string; badgeClass: string }
+> = {
+  SONG: {
+    label: "Song Track",
+    iconName: "Headphones",
+    badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+  },
+  ALBUM: {
+    label: "Album / LP",
+    iconName: "Disc",
+    badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+  },
+  ARTIST: {
+    label: "Artist Catalog",
+    iconName: "Users",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+  },
+  BOOK: {
+    label: "Book / Literature",
+    iconName: "BookOpen",
+    badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+  },
+  ARTICLE: {
+    label: "Article / Essay",
+    iconName: "FileText",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+  },
+  INTERVIEW: {
+    label: "Interview / Panel",
+    iconName: "Mic",
+    badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
+  },
+  VIDEO: {
+    label: "Video / Breakdown",
+    iconName: "Video",
+    badgeClass: "bg-orange-500/15 text-orange-300 border-orange-500/30",
+  },
+  OTHER: {
+    label: "Other Resource",
+    iconName: "Compass",
+    badgeClass: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
+  },
+};
+
+export type StudyFocus =
+  | "FLOW"
+  | "CADENCE"
+  | "WRITING"
+  | "STORYTELLING"
+  | "WORDPLAY"
+  | "RHYME"
+  | "HOOKS"
+  | "DELIVERY"
+  | "PRODUCTION"
+  | "ARRANGEMENT"
+  | "SAMPLING"
+  | "SOUND_SELECTION"
+  | "VOCABULARY"
+  | "CONCEPT";
+
+export interface StudyFocusConfig {
+  label: string;
+  category: "Writing" | "Flow" | "Production" | "Artist";
+  badgeClass: string;
+  description: string;
+}
+
+export const STUDY_FOCUS_CONFIGS: Record<StudyFocus, StudyFocusConfig> = {
+  FLOW: {
+    label: "Flow & Pocket",
+    category: "Flow",
+    badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    description: "Pocket elasticity, bounce, syncopation, and rhythmic feel",
+  },
+  CADENCE: {
+    label: "Cadence & Phrasing",
+    category: "Flow",
+    badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    description: "Cadence switches, metric division, and syllable grouping",
+  },
+  DELIVERY: {
+    label: "Delivery & Tone",
+    category: "Flow",
+    badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    description: "Vocal energy, dynamic contrast, breath control, and tone inflection",
+  },
+  WRITING: {
+    label: "Lyrical Writing",
+    category: "Writing",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    description: "Line construction, density, themes, and emotional impact",
+  },
+  STORYTELLING: {
+    label: "Storytelling & Arc",
+    category: "Writing",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    description: "Narrative pacing, vivid imagery, sensory details, and perspectives",
+  },
+  WORDPLAY: {
+    label: "Wordplay & Double Entendres",
+    category: "Writing",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    description: "Metaphors, similes, punchlines, and clever linguistic subversion",
+  },
+  RHYME: {
+    label: "Rhyme Scheme & Multisyllables",
+    category: "Writing",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    description: "Internal rhymes, compound vowel chains, and slant rhymes",
+  },
+  HOOKS: {
+    label: "Hook & Chorus Craft",
+    category: "Artist",
+    badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+    description: "Melodic catchiness, anthemic repetition, and vocal stickiness",
+  },
+  CONCEPT: {
+    label: "Concept & Worldbuilding",
+    category: "Artist",
+    badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
+    description: "Song identity, thematic coherence, and artistic authenticity",
+  },
+  PRODUCTION: {
+    label: "Beat Production & Sonic Palette",
+    category: "Production",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    description: "Drums, basslines, melodic hooks, and sonic texture",
+  },
+  ARRANGEMENT: {
+    label: "Arrangement & Dynamics",
+    category: "Production",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    description: "Build-ups, drops, beat switches, transitions, and energy arcs",
+  },
+  SAMPLING: {
+    label: "Sample Flip & Interpolation",
+    category: "Production",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    description: "Chop techniques, pitch shifting, groove realignment, and texture",
+  },
+  SOUND_SELECTION: {
+    label: "Sound Selection & Mixing",
+    category: "Production",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    description: "Frequency balance, vocal chain placement, and spatial depth",
+  },
+  VOCABULARY: {
+    label: "Vocabulary & Lexicon",
+    category: "Writing",
+    badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    description: "Uncommon words, evocative nouns, and precise semantic choices",
+  },
+};
+
+export type ListeningPurpose =
+  | "CASUAL"
+  | "INSPIRATION"
+  | "STUDY"
+  | "PRODUCTION"
+  | "WRITING"
+  | "FLOW"
+  | "RESEARCH";
+
+export const LISTENING_PURPOSE_CONFIGS: Record<
+  ListeningPurpose,
+  { label: string; badgeClass: string }
+> = {
+  STUDY: { label: "Deep Study", badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30" },
+  INSPIRATION: { label: "Inspiration", badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  WRITING: { label: "Writing Focus", badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+  FLOW: { label: "Flow Analysis", badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  PRODUCTION: { label: "Production Ear", badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30" },
+  RESEARCH: { label: "Research", badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30" },
+  CASUAL: { label: "Casual Listen", badgeClass: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30" },
+};
+
+export interface ArtistData {
+  id: string;
+  userId: string;
+  name: string;
+  role: string;
+  notes: string | null;
+  status: ArtistStatus;
+  genres: string | null;
+  tags: string | null;
+  favorite: boolean;
+  referenceCount?: number;
+  studySessionCount?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ArtistReferenceData {
+  id: string;
+  userId: string;
+  type: ReferenceType;
+  title: string;
+  creator: string;
+  artistId: string | null;
+  artist?: ArtistData | null;
+  year: number | null;
+  url: string | null;
+  album: string | null;
+  genre: string | null;
+  notes: string | null;
+  tags: string | null;
+  favorite: boolean;
+  studySessionCount?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface StudySessionData {
+  id: string;
+  userId: string;
+  referenceId: string | null;
+  reference?: ArtistReferenceData | null;
+  artistId: string | null;
+  artist?: ArtistData | null;
+  focus: StudyFocus;
+  customFocus: string | null;
+  startedAt: string;
+  completedAt: string | null;
+  durationSeconds: number;
+  observations: string | null;
+  techniques: string | null;
+  favoriteSection: string | null;
+  whyItWorks: string | null;
+  whatSurprisedMe: string | null;
+  whatILearned: string | null;
+  experimentIdea: string | null;
+  takeaway: string | null;
+  rating: number | null;
+  skillId: string | null;
+  skill?: SkillData | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface AlbumStudyData {
+  id: string;
+  userId: string;
+  referenceId: string;
+  reference?: ArtistReferenceData | null;
+  overallImpression: string | null;
+  themes: string | null;
+  productionNotes: string | null;
+  writingNotes: string | null;
+  sequencingNotes: string | null;
+  standoutTracks: string | null;
+  weakestTrack: string | null;
+  recurringTechniques: string | null;
+  lessons: string | null;
+  experimentIdeas: string | null;
+  rating: number | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ListeningEntryData {
+  id: string;
+  userId: string;
+  referenceId: string | null;
+  reference?: ArtistReferenceData | null;
+  title: string;
+  creator: string;
+  date: string;
+  durationMinutes: number;
+  purpose: ListeningPurpose;
+  mood: string | null;
+  reaction: string | null;
+  studyWorthy: boolean;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface DiscoveryStatsData {
+  totalReferences: number;
+  totalArtistsStudied: number;
+  totalStudySessions: number;
+  totalStudyMinutes: number;
+  activeStudyFocus: string[];
+  listeningEntriesCount: number;
+}
+
+export interface TodayStudyRecommendation {
+  reference: ArtistReferenceData | null;
+  artist: ArtistData | null;
+  focus: StudyFocus;
+  reason: string;
+  suggestedAction: string;
+}
+
+// Reflection Models & Configs
+
+export type BottleneckCategory =
+  | "DISCIPLINE"
+  | "DISTRACTION"
+  | "WRITING"
+  | "FLOW"
+  | "VOCABULARY"
+  | "RHYME"
+  | "STORYTELLING"
+  | "PRODUCTION"
+  | "SONG_STRUCTURE"
+  | "FINISHING"
+  | "CONFIDENCE"
+  | "TIME"
+  | "ENERGY"
+  | "OTHER";
+
+export const BOTTLENECK_CATEGORY_CONFIGS: Record<
+  BottleneckCategory,
+  { label: string; badgeClass: string; suggestedSkillSlug?: string }
+> = {
+  FINISHING: {
+    label: "Finishing Songs",
+    badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30",
+    suggestedSkillSlug: "rapid-drafting",
+  },
+  WRITING: {
+    label: "Writing & Lyricism",
+    badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30",
+    suggestedSkillSlug: "rapid-drafting",
+  },
+  FLOW: {
+    label: "Flow & Cadence",
+    badgeClass: "bg-orange-500/15 text-orange-300 border-orange-500/30",
+    suggestedSkillSlug: "pocket-mastery",
+  },
+  SONG_STRUCTURE: {
+    label: "Song Structure & Hooks",
+    badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30",
+    suggestedSkillSlug: "punchline-placement",
+  },
+  RHYME: {
+    label: "Rhyme Scheme Limits",
+    badgeClass: "bg-yellow-500/15 text-yellow-300 border-yellow-500/30",
+    suggestedSkillSlug: "multisyllabic-rhyming",
+  },
+  VOCABULARY: {
+    label: "Vocabulary Range",
+    badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30",
+    suggestedSkillSlug: "lyrical-vocabulary",
+  },
+  STORYTELLING: {
+    label: "Storytelling Depth",
+    badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30",
+    suggestedSkillSlug: "narrative-structure",
+  },
+  PRODUCTION: {
+    label: "Production & Beats",
+    badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30",
+    suggestedSkillSlug: "tempo-rhythm-sync",
+  },
+  CONFIDENCE: {
+    label: "Creative Doubt / Confidence",
+    badgeClass: "bg-red-500/15 text-red-300 border-red-500/30",
+  },
+  DISCIPLINE: {
+    label: "Daily Discipline",
+    badgeClass: "bg-zinc-500/15 text-zinc-300 border-zinc-500/30",
+  },
+  DISTRACTION: {
+    label: "Distractions & Focus",
+    badgeClass: "bg-zinc-500/15 text-zinc-300 border-zinc-500/30",
+  },
+  TIME: {
+    label: "Time Constraints",
+    badgeClass: "bg-zinc-500/15 text-zinc-300 border-zinc-500/30",
+  },
+  ENERGY: {
+    label: "Fatigue / Energy",
+    badgeClass: "bg-zinc-500/15 text-zinc-300 border-zinc-500/30",
+  },
+  OTHER: {
+    label: "Other Bottleneck",
+    badgeClass: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30",
+  },
+};
+
+export type BreakthroughCategory =
+  | "FLOW"
+  | "WRITING"
+  | "PRODUCTION"
+  | "MINDSET"
+  | "PROCESS"
+  | "TECHNIQUE"
+  | "OTHER";
+
+export const BREAKTHROUGH_CATEGORY_CONFIGS: Record<
+  BreakthroughCategory,
+  { label: string; badgeClass: string }
+> = {
+  FLOW: { label: "Flow & Pocket", badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  WRITING: { label: "Writing & Lyrics", badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  PRODUCTION: { label: "Production", badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30" },
+  MINDSET: { label: "Artist Mindset", badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+  PROCESS: { label: "Creative Process", badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30" },
+  TECHNIQUE: { label: "Vocal / DAW Technique", badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30" },
+  OTHER: { label: "General Breakthrough", badgeClass: "bg-zinc-500/15 text-zinc-400 border-zinc-500/30" },
+};
+
+export type MilestoneCategory =
+  | "RELEASE"
+  | "CREATION"
+  | "PERFORMANCE"
+  | "SKILL"
+  | "MILESTONE"
+  | "CAREER";
+
+export const MILESTONE_CATEGORY_CONFIGS: Record<
+  MilestoneCategory,
+  { label: string; badgeClass: string }
+> = {
+  RELEASE: { label: "Project / Song Release", badgeClass: "bg-purple-500/15 text-purple-300 border-purple-500/30" },
+  CREATION: { label: "Body of Work", badgeClass: "bg-amber-500/15 text-amber-300 border-amber-500/30" },
+  PERFORMANCE: { label: "Live Performance", badgeClass: "bg-rose-500/15 text-rose-300 border-rose-500/30" },
+  SKILL: { label: "Skill Milestone", badgeClass: "bg-emerald-500/15 text-emerald-300 border-emerald-500/30" },
+  CAREER: { label: "Career Benchmark", badgeClass: "bg-sky-500/15 text-sky-300 border-sky-500/30" },
+  MILESTONE: { label: "Milestone", badgeClass: "bg-indigo-500/15 text-indigo-300 border-indigo-500/30" },
+};
+
+export interface DailyReflectionData {
+  id: string;
+  userId: string;
+  date: string;
+  created: string | null;
+  finished: string | null;
+  unfinished: string | null;
+  practiced: string | null;
+  skillWorked: string | null;
+  difficulties: string | null;
+  studied: string | null;
+  learned: string | null;
+  energy: string | null;
+  drained: string | null;
+  distractions: string | null;
+  clicked: string | null;
+  surprised: string | null;
+  continueItem: string | null;
+  improveItem: string | null;
+  tomorrowPriority: string | null;
+  snapshotStats: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WeeklyReviewData {
+  id: string;
+  userId: string;
+  weekStart: string;
+  weekEnd: string;
+  outputNotes: string | null;
+  learningNotes: string | null;
+  weaknessesNotes: string | null;
+  momentumNotes: string | null;
+  breakthroughNotes: string | null;
+  nextFocus: string | null;
+  statsSummary: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BottleneckData {
+  id: string;
+  userId: string;
+  category: BottleneckCategory;
+  description: string;
+  severity: number; // 1-5
+  date: string;
+  attemptedSolution: string | null;
+  result: string | null;
+  resolved: boolean;
+  resolvedAt: string | null;
+  skillId: string | null;
+  skill?: SkillData | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BreakthroughData {
+  id: string;
+  userId: string;
+  title: string;
+  category: BreakthroughCategory;
+  date: string;
+  description: string;
+  cause: string | null;
+  changeEffect: string | null;
+  skillId: string | null;
+  skill?: SkillData | null;
+  songId: string | null;
+  song?: SongData | null;
+  trainingSessionId: string | null;
+  studySessionId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MilestoneData {
+  id: string;
+  userId: string;
+  title: string;
+  date: string;
+  category: MilestoneCategory;
+  description: string;
+  significance: string | null;
+  lessons: string | null;
+  nextStep: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ReflectionStatsData {
+  totalDailyReflections: number;
+  totalWeeklyReviews: number;
+  activeBottlenecksCount: number;
+  resolvedBottlenecksCount: number;
+  breakthroughsCount: number;
+  milestonesCount: number;
+}
+
+export interface TodayActivityContext {
+  date: string;
+  writingDraftsCount: number;
+  trainingMinutes: number;
+  exercisesCompletedCount: number;
+  studySessionsCount: number;
+  songsUpdatedCount: number;
+  totalCreativeMinutes: number;
+  activities: CreativeActivityData[];
+}
+
+export interface WeeklyDiagnosticInsight {
+  weekStart: string;
+  weekEnd: string;
+  totalMinutesPracticed: number;
+  totalDrillsCompleted: number;
+  totalWritingsCreated: number;
+  totalReferencesStudied: number;
+  totalSongsFinished: number;
+  mostPracticedCategory: string | null;
+  leastPracticedCategory: string | null;
+  recurringBottleneck: string | null;
+  strongestMomentum: string;
+  suggestedFocus: string;
+  actionableRecommendation: string;
+}
+
 

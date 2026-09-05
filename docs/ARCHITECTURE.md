@@ -60,22 +60,33 @@ This document details the architectural principles, data schema, component desig
 * **`TrainingSession`** (N) ─── (1) **`WritingDocument`**: Direct link between rapid writing sprints and the Creative Workspace.
 * **`User`** (1) ─── (N) **`RhymeChain`** (1) ─── (N) **`RhymeEntry`**: Multi-syllabic rhyme scheme vault and syllabic matching.
 * **`User`** (1) ─── (N) **`VocabularyEntry`**: Lyrical dictionary with pronunciations, custom lines, and sensory associations.
+* **`User`** (1) ─── (N) **`Artist`** (1) ─── (N) **`ArtistReference`**: Curated artist library & multi-format reference vault (`SONG`, `ALBUM`, `ARTIST`, `BOOK`, `ARTICLE`, `INTERVIEW`, `VIDEO`, `OTHER`).
+* **`ArtistReference`** (1) ─── (N) **`StudySession`**: In-depth track dissections across 14 focus areas with drift-proof timers and structured anatomical prompts.
+* **`StudySession`** (1) ─── (1) **`WritingDocument`** / **`TrainingSession`**: 1-click bridge transforming masterwork observations into deliberate practice drills and song drafts.
+* **`User`** (1) ─── (N) **`AlbumStudy`**: Project-level album architecture breakdowns (sequencing, cohesion, standout moments, and production lessons).
+* **`User`** (1) ─── (N) **`ListeningEntry`**: Purpose-driven listening logs tagged by intent (`CASUAL`, `STUDY`, `INSPIRATION`, `PRODUCTION`, `WRITING`, `FLOW`, `RESEARCH`).
+* **`User`** (1) ─── (N) **`DailyReflection`**: Grounded daily retrospectives with automated activity snapshots (`continueItem`, `improveItem`, `tomorrowPriority`).
+* **`User`** (1) ─── (N) **`WeeklyReview`**: 7-day creative volume audits with deterministic diagnostic insights and suggested focus areas.
+* **`User`** (1) ─── (N) **`Bottleneck`**: Diagnosed creative obstacles with 1-5 severity ratings, attempted solutions, and 1-click **Train Weakness** launcher to gymnasium drills.
+* **`User`** (1) ─── (N) **`Breakthrough`**: Breakthrough log linking insights directly to skills and finished songs.
+* **`User`** (1) ─── (N) **`Milestone`**: Visual artistic milestone timeline across career, craft, releases, and milestones.
 
 ---
 
-## 4. Training Engine Architecture (Phase 3)
+## 4. Discovery & Reflection Architecture (Phase 4)
 
-### Precision Web Audio Metronome & Lookahead Scheduler
-Standard JavaScript `setInterval` and `setTimeout` suffer from main-thread UI contention and aggressive background-tab throttling. To ensure true studio-grade rhythmic timing, PRIME implements a 2-tier Web Audio scheduler:
-1. A 25ms timer periodically inspects the `AudioContext.currentTime` timeline.
-2. Synthesized oscillator clicks (high accent on beat 1, lower tone on other beats) are pre-scheduled 100ms in advance directly onto the hardware audio thread.
-3. Beat flash callbacks fire in sync with scheduled audio pulses, guaranteeing sample-accurate pocket locking with zero timing drift.
+### The Complete Artist Development Learning Loop
+PRIME closes the full human artist development loop:
+```
+DISCOVER → STUDY → REFLECT → IDENTIFY WEAKNESS → PRACTICE → CREATE → FINISH → REFLECT
+```
 
-### Drift-Proof Timestamp-Delta Timer
-Training countdown and elapsed timers calculate remaining time from high-resolution timestamp deltas (`Date.now()` / `performance.now()`) rather than frame-by-frame ticks. If the artist minimizes the browser or locks their screen during a sprint, the timer calculates the exact elapsed interval upon return.
-
-### Creative Activity & Streak Synchronization
-When an artist finishes a drill and logs their self-evaluation, `completeTrainingSession` automatically dispatches a `CreativeActivity` record (`type: "PRACTICE"` or `"WRITING"`). This updates the Dashboard's daily streak, weekly practice minutes, and activity matrix without requiring manual duplication.
+1. **Reference Vault & Track Dissection**: References are cataloged with status (`STUDYING`, `ACTIVE_REFERENCE`, `DISCOVERED`, `ARCHIVED`) and dissected in a dedicated full-screen study arena.
+2. **Study-to-Practice Conversion Engine**: Observations and analyzed techniques can be instantly converted into a Training Drill (`/train`), a Writing Document (`/create/write`), a Song Concept (`/create/songs`), or a Quick Capture.
+3. **Data-Grounded Daily Reflections**: Daily logs display an automated live activity summary (drafts written, training minutes, exercises finished, studies conducted, and songs touched today) before capturing what to continue, what to improve, and tomorrow's #1 priority.
+4. **Deterministic Diagnostic Weekly Insights**: Weekly reviews synthesize actual 7-day practice volume, identify most and least practiced disciplines, surface recurring high-severity bottlenecks, and recommend concrete focus areas without black-box AI hallucinations.
+5. **Bottleneck Audit & Train Weakness Bridge**: Active creative bottlenecks feature an immediate **Train Weakness** button that routes the artist directly into targeted Phase 3 gymnasium drills.
+6. **Automatic Activity Synchronization**: Logging a study session or listening entry automatically records a `LISTENING` creative activity, while saving a daily reflection or weekly review records a `REFLECTION` activity, maintaining creative streaks seamlessly.
 
 ---
 
@@ -97,17 +108,19 @@ PRIME employs a bespoke **Studio Obsidian** dark theme:
 ### Component Hierarchy
 * **Primitives (`src/components/ui/`)**: `Button`, `Card`, `Modal`, `Input`, `Textarea`, `Select`, `Badge`, `ProgressBar`, `Toast`.
 * **Navigation (`src/components/navigation/`)**: `Sidebar`, `MobileNav`, `GlobalQuickCaptureModal`, `NavigationProvider`.
-* **Dashboard Modules (`src/components/dashboard/`)**: `DashboardHeader`, `TodayMissionCard`, `TodayActivitiesSection`, `GoalsSection`, `WeeklyOverviewChart`, `CreativeStreakCard`, `QuickCapturesFeed`.
+* **Dashboard Modules (`src/components/dashboard/`)**: `DashboardHeader`, `TodayMissionCard`, `TodayActivitiesSection`, `GoalsSection`, `WeeklyOverviewChart`, `CreativeStreakCard`, `QuickCapturesFeed`, `CreativeLoopWidget`.
 * **Creative Modules (`src/components/create/`)**: `WritingEditor`, `SongScaffolder`, `ProjectTracklistBoard`, `CaptureConverterModal`.
 * **Training Modules (`src/components/train/`)**: `PocketGym`, `MetronomeEngine`, `TrainingTimer`, `RapidSprintStudio`, `FreestylePrompter`, `RhymeBuilderView`, `VocabularyGymView`, `ProductionChallengeView`, `SessionCompletionModal`, `ExerciseCard`, `ExerciseListView`, `TodayTrainingCard`, `TrainingHubHeader`, `TrainingHistoryView`.
+* **Discovery Modules (`src/components/discover/`)**: `DiscoverHubHeader`, `TodayStudyHero`, `ReferenceCard`, `ReferenceListView`, `ReferenceModal`, `ArtistCard`, `ArtistListView`, `ArtistModal`, `StudyVaultView`, `StudySessionRunner`, `StudyPracticeModal`, `AlbumStudyView`, `AlbumStudyModal`, `ListeningDiaryView`, `ListeningEntryModal`.
+* **Reflection Modules (`src/components/reflect/`)**: `ReflectHubHeader`, `DailyReflectionView`, `WeeklyReviewView`, `BottleneckAuditView`, `BottleneckModal`, `BreakthroughLogView`, `BreakthroughModal`, `MilestonesTimelineView`, `MilestoneModal`.
 
 ---
 
-## 6. Extension Points for Phase 4+
+## 6. Extension Points for Phase 5+
 
-1. **Music Discovery & Study (`/discover`)**:
-   * Song structure analysis and rhyme scheme annotation linked to Rhyme Chains and Vocabulary entries.
-2. **Audio Waveform Recording (`/reflect` & `/create`)**:
-   * Direct vocal take recording with local playback and waveform analysis.
-3. **Artist DNA Engine (`/progress`)**:
-   * Aggregates activity distributions, exercise ratings, and writing sprint frequencies to map the artist's developmental growth curve.
+1. **Artist DNA & Progress Analytics (`/progress`)**:
+   * Multidimensional competency spider charts, flow fingerprinting, catalog growth velocity, and learning loop conversion metrics.
+2. **AI Creative Sparring Partner & Intelligent Drill Suggester**:
+   * Context-aware prompt suggestions based on unresolved bottlenecks, rhyme scheme complexity analysis, and cadence critique.
+3. **Audio Waveform Recording & Vocal Take Management**:
+   * In-browser audio take recording, waveform visualization, and multi-track demo management.

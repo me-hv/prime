@@ -43,37 +43,43 @@ PRIME is built incrementally across clearly defined phases to guarantee producti
 
 ---
 
-## Phase 4 — Music Discovery & Study
-* [ ] Classic Song Anatomy breakdown tool with rhyme density analyzer.
-* [ ] Album architecture dissection and sequencing analysis.
-* [ ] Artist Lineage & Influence mapping tree.
-* [ ] Creative literature notes, book summaries, and actionable songwriting principles.
+## Phase 4 — Discovery & Reflection *(Completed)*
+* [x] Artist Library & Reference Vault across 8 media formats with study status (`STUDYING`, `ACTIVE_REFERENCE`, `DISCOVERED`, `ARCHIVED`).
+* [x] Track Dissection Arena & Study Sessions across 14 focus areas with drift-proof timers and structured anatomical prompt fields.
+* [x] 1-Click Study-to-Practice Conversion Engine routing observations into Training Drills (`/train`), Writing Drafts (`/create/write`), Song Concepts (`/create/songs`), or Quick Captures.
+* [x] Album Architecture Dissection studio for project-level track sequencing, conceptual cohesion, standout moments, and production takeaways.
+* [x] Purpose-Driven Listening Diary categorized by listening intent (`CASUAL`, `STUDY`, `INSPIRATION`, `PRODUCTION`, `WRITING`, `FLOW`, `RESEARCH`) with study-worthy flags.
+* [x] Daily Retrospective Engine grounded in live daily activity snapshots (drafts created, training minutes, exercises finished, studies conducted, songs updated).
+* [x] Weekly Creative Output Audit with deterministic diagnostic **PRIME Insights** (most/least practiced disciplines, recurring bottlenecks, suggested focus).
+* [x] Creative Bottleneck Audit with 1-5 severity meters, solution tracking, and 1-click **Train Weakness** launcher to gymnasium drills.
+* [x] Breakthrough Log & Visual Milestones Timeline linked to skills and songs across an artist's career trajectory.
+* [x] Master Artist Learning Loop dashboard widget and universal search integration across all Phase 1–4 entities.
 
 ---
 
-## Phase 5 — Reflection & Journaling
-* [ ] Daily guided Artist Journaling templates (Doubt, Resistance, Breakthroughs).
-* [ ] 1-Tap Voice Journaling with local waveform visualization and transcription.
-* [ ] Automated Weekly Retrospective & Creative Output Audit.
-* [ ] Future-Self Letters with scheduled time-lock releases.
-
----
-
-## Phase 6 — Progress & Artist DNA
+## Phase 5 — Progress & Artist DNA
 * [ ] Dynamic Artist DNA Fingerprint (lyrical complexity, flow pocket habits, harmonic palette).
-* [ ] Granular output analytics (bars written per week, beats arranged, practice hours).
-* [ ] Milestone achievements and catalog growth velocity.
+* [ ] Multi-dimensional competency radar charts across core disciplines.
+* [ ] Granular output analytics (bars written per week, beats arranged, practice hours, study volume).
+* [ ] Learning loop conversion efficiency (Study → Drill → Song conversion rates).
 
 ---
 
-## Phase 7 — AI Coach & Deep Focus Shield
-* [ ] AI Creative Sparring Partner (critique rhyme density, suggest slant rhymes, offer concept angles).
-* [ ] Context-aware daily prompt suggestions based on current artist goals.
-* [ ] Distraction Blocker and deep studio session timer.
+## Phase 6 — Audio Capture & Vocal Take Studio
+* [ ] In-browser voice note & scratch melody recorder with live waveform visualization.
+* [ ] Vocal take auditioning and multi-take comparison per song section.
+* [ ] Metronome-synced scratch vocal tracking with pre-roll and count-in.
 
 ---
 
-## Phase 8 — Advanced Integrations & Ecosystem
-* [ ] Cloud database sync & multi-device offline-first synchronization.
-* [ ] DAW integration helpers & audio export pipelines.
-* [ ] Mobile Native Companion (iOS / Android PWA or React Native).
+## Phase 7 — AI Creative Sparring & Sparring Partner
+* [ ] Context-aware rhyme scheme density analysis and slant-rhyme suggester.
+* [ ] Unresolved bottleneck intelligent drill suggester.
+* [ ] Flow cadence critique and bar structure validator.
+
+---
+
+## Phase 8 — Advanced Ecosystem & Sync
+* [ ] Cloud database synchronization & offline-first PWA caching.
+* [ ] DAW session integration helpers & stems export pipeline.
+* [ ] Mobile Native Companion (iOS / Android).

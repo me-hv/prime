@@ -11,72 +11,192 @@ export async function searchCreativeWorkspace(
   const q = query.trim().toLowerCase();
   if (!q) return [];
 
-  // 1. Search Writing Documents
-  const writings = await prisma.writingDocument.findMany({
-    where: {
-      userId: DEFAULT_USER_ID,
-      OR: [
-        { title: { contains: q } },
-        { content: { contains: q } },
-        { tags: { contains: q } },
-      ],
-    },
-    take: 10,
-    orderBy: { updatedAt: "desc" },
-  });
+  const [
+    writings,
+    songs,
+    projects,
+    captures,
+    artists,
+    references,
+    studySessions,
+    reflections,
+    bottlenecks,
+    breakthroughs,
+    milestones,
+  ] = await Promise.all([
+    // 1. Writings
+    prisma.writingDocument.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { title: { contains: q } },
+          { content: { contains: q } },
+          { tags: { contains: q } },
+        ],
+      },
+      take: 5,
+      orderBy: { updatedAt: "desc" },
+    }),
 
-  // 2. Search Songs and Song Sections
-  const songs = await prisma.song.findMany({
-    where: {
-      userId: DEFAULT_USER_ID,
-      OR: [
-        { title: { contains: q } },
-        { concept: { contains: q } },
-        { tags: { contains: q } },
-        { nextAction: { contains: q } },
-        {
-          sections: {
-            some: {
-              OR: [{ name: { contains: q } }, { content: { contains: q } }],
+    // 2. Songs
+    prisma.song.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { title: { contains: q } },
+          { concept: { contains: q } },
+          { tags: { contains: q } },
+          { nextAction: { contains: q } },
+          {
+            sections: {
+              some: {
+                OR: [{ name: { contains: q } }, { content: { contains: q } }],
+              },
             },
           },
-        },
-      ],
-    },
-    include: {
-      sections: true,
-    },
-    take: 10,
-    orderBy: { updatedAt: "desc" },
-  });
+        ],
+      },
+      include: { sections: true },
+      take: 5,
+      orderBy: { updatedAt: "desc" },
+    }),
 
-  // 3. Search Projects
-  const projects = await prisma.creativeProject.findMany({
-    where: {
-      userId: DEFAULT_USER_ID,
-      OR: [
-        { title: { contains: q } },
-        { description: { contains: q } },
-        { notes: { contains: q } },
-      ],
-    },
-    take: 5,
-    orderBy: { updatedAt: "desc" },
-  });
+    // 3. Projects
+    prisma.creativeProject.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { title: { contains: q } },
+          { description: { contains: q } },
+          { notes: { contains: q } },
+        ],
+      },
+      take: 4,
+      orderBy: { updatedAt: "desc" },
+    }),
 
-  // 4. Search Quick Captures
-  const captures = await prisma.quickCapture.findMany({
-    where: {
-      userId: DEFAULT_USER_ID,
-      OR: [
-        { title: { contains: q } },
-        { content: { contains: q } },
-        { tags: { contains: q } },
-      ],
-    },
-    take: 10,
-    orderBy: { createdAt: "desc" },
-  });
+    // 4. Captures
+    prisma.quickCapture.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { title: { contains: q } },
+          { content: { contains: q } },
+          { tags: { contains: q } },
+        ],
+      },
+      take: 5,
+      orderBy: { createdAt: "desc" },
+    }),
+
+    // 5. Artists
+    prisma.artist.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { name: { contains: q } },
+          { role: { contains: q } },
+          { notes: { contains: q } },
+          { genres: { contains: q } },
+          { tags: { contains: q } },
+        ],
+      },
+      take: 5,
+      orderBy: { updatedAt: "desc" },
+    }),
+
+    // 6. References
+    prisma.artistReference.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { title: { contains: q } },
+          { creator: { contains: q } },
+          { album: { contains: q } },
+          { notes: { contains: q } },
+          { tags: { contains: q } },
+        ],
+      },
+      take: 6,
+      orderBy: { updatedAt: "desc" },
+    }),
+
+    // 7. Study Sessions
+    prisma.studySession.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { observations: { contains: q } },
+          { techniques: { contains: q } },
+          { whatILearned: { contains: q } },
+          { takeaway: { contains: q } },
+          { customFocus: { contains: q } },
+        ],
+      },
+      include: { reference: true },
+      take: 5,
+      orderBy: { createdAt: "desc" },
+    }),
+
+    // 8. Daily Reflections
+    prisma.dailyReflection.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { clicked: { contains: q } },
+          { learned: { contains: q } },
+          { created: { contains: q } },
+          { tomorrowPriority: { contains: q } },
+        ],
+      },
+      take: 4,
+      orderBy: { date: "desc" },
+    }),
+
+    // 9. Bottlenecks
+    prisma.bottleneck.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { description: { contains: q } },
+          { attemptedSolution: { contains: q } },
+          { result: { contains: q } },
+        ],
+      },
+      take: 4,
+      orderBy: { date: "desc" },
+    }),
+
+    // 10. Breakthroughs
+    prisma.breakthrough.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { title: { contains: q } },
+          { description: { contains: q } },
+          { cause: { contains: q } },
+          { changeEffect: { contains: q } },
+        ],
+      },
+      take: 4,
+      orderBy: { date: "desc" },
+    }),
+
+    // 11. Milestones
+    prisma.milestone.findMany({
+      where: {
+        userId: DEFAULT_USER_ID,
+        OR: [
+          { title: { contains: q } },
+          { description: { contains: q } },
+          { significance: { contains: q } },
+          { lessons: { contains: q } },
+        ],
+      },
+      take: 4,
+      orderBy: { date: "desc" },
+    }),
+  ]);
 
   const results: SearchItemResult[] = [];
 
@@ -133,6 +253,104 @@ export async function searchCreativeWorkspace(
       href: `/create?tab=inbox`,
       updatedAt: c.updatedAt.toISOString(),
       snippet: c.content,
+    });
+  }
+
+  // Map Artists
+  for (const a of artists) {
+    results.push({
+      id: a.id,
+      title: a.name,
+      subtitle: `${a.role} • Status: ${a.status}`,
+      type: "ARTIST",
+      categoryBadge: "Artist Library",
+      href: `/discover?tab=artists`,
+      updatedAt: a.updatedAt.toISOString(),
+      snippet: a.notes || a.genres || undefined,
+    });
+  }
+
+  // Map References
+  for (const r of references) {
+    results.push({
+      id: r.id,
+      title: r.title,
+      subtitle: `${r.type} • by ${r.creator}${r.album ? ` • ${r.album}` : ""}`,
+      type: "REFERENCE",
+      categoryBadge: "Reference Vault",
+      href: `/discover?tab=references`,
+      updatedAt: r.updatedAt.toISOString(),
+      snippet: r.notes || r.genre || undefined,
+    });
+  }
+
+  // Map Study Sessions
+  for (const st of studySessions) {
+    results.push({
+      id: st.id,
+      title: st.reference ? `Study: ${st.reference.title}` : `Study Session (${st.focus})`,
+      subtitle: `${st.focus} Analysis • Duration: ${Math.round(st.durationSeconds / 60)} min`,
+      type: "STUDY",
+      categoryBadge: "Song Breakdown",
+      href: `/discover?tab=vault`,
+      updatedAt: st.updatedAt.toISOString(),
+      snippet: st.takeaway || st.whatILearned || st.observations || undefined,
+    });
+  }
+
+  // Map Daily Reflections
+  for (const rf of reflections) {
+    results.push({
+      id: rf.id,
+      title: `Daily Reflection (${rf.date})`,
+      subtitle: `Retrospective • ${rf.tomorrowPriority ? `Priority: ${rf.tomorrowPriority}` : "Daily Log"}`,
+      type: "REFLECTION",
+      categoryBadge: "Daily Reflection",
+      href: `/reflect?tab=daily&date=${rf.date}`,
+      updatedAt: rf.updatedAt.toISOString(),
+      snippet: rf.clicked || rf.learned || rf.created || undefined,
+    });
+  }
+
+  // Map Bottlenecks
+  for (const b of bottlenecks) {
+    results.push({
+      id: b.id,
+      title: `Bottleneck: ${b.category}`,
+      subtitle: `Severity ${b.severity}/5 • ${b.resolved ? "Resolved" : "Active Block"}`,
+      type: "BOTTLENECK",
+      categoryBadge: "Creative Block",
+      href: `/reflect?tab=bottlenecks`,
+      updatedAt: b.updatedAt.toISOString(),
+      snippet: b.description,
+    });
+  }
+
+  // Map Breakthroughs
+  for (const br of breakthroughs) {
+    results.push({
+      id: br.id,
+      title: br.title,
+      subtitle: `Breakthrough • ${br.category} • ${br.date}`,
+      type: "BREAKTHROUGH",
+      categoryBadge: "Creative Leap",
+      href: `/reflect?tab=breakthroughs`,
+      updatedAt: br.updatedAt.toISOString(),
+      snippet: br.description,
+    });
+  }
+
+  // Map Milestones
+  for (const m of milestones) {
+    results.push({
+      id: m.id,
+      title: m.title,
+      subtitle: `Milestone • ${m.category} • ${m.date}`,
+      type: "MILESTONE",
+      categoryBadge: "Milestone",
+      href: `/reflect?tab=milestones`,
+      updatedAt: m.updatedAt.toISOString(),
+      snippet: m.description,
     });
   }
 

@@ -5,6 +5,8 @@ import { getTodayActivities, getWeeklyOverview } from "@/actions/activities";
 import { getGoals } from "@/actions/goals";
 import { getQuickCaptures } from "@/actions/captures";
 import { getDashboardStats, getStreakMatrix } from "@/actions/stats";
+import { getDiscoveryStats, getTodayStudyRecommendation } from "@/actions/discovery";
+import { getReflectionStats } from "@/actions/reflection";
 
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { CurrentFocusCard } from "@/components/dashboard/CurrentFocusCard";
@@ -14,6 +16,7 @@ import { GoalsSection } from "@/components/dashboard/GoalsSection";
 import { WeeklyOverviewChart } from "@/components/dashboard/WeeklyOverviewChart";
 import { CreativeStreakCard } from "@/components/dashboard/CreativeStreakCard";
 import { QuickCapturesFeed } from "@/components/dashboard/QuickCapturesFeed";
+import { CreativeLoopWidget } from "@/components/dashboard/CreativeLoopWidget";
 
 export const dynamic = "force-dynamic";
 
@@ -27,6 +30,9 @@ export default async function HomePage() {
     weeklyOverview,
     dashboardStats,
     streakMatrix,
+    discoveryStats,
+    reflectionStats,
+    todayStudy,
   ] = await Promise.all([
     getProfile(),
     getTodayMission(),
@@ -36,6 +42,9 @@ export default async function HomePage() {
     getWeeklyOverview(),
     getDashboardStats(),
     getStreakMatrix(14),
+    getDiscoveryStats().catch(() => undefined),
+    getReflectionStats().catch(() => undefined),
+    getTodayStudyRecommendation().catch(() => null),
   ]);
 
   return (
@@ -52,7 +61,14 @@ export default async function HomePage() {
         supportingGoals={goals}
       />
 
-      {/* 3. Today's Primary Mission */}
+      {/* 3. The Master Artist Development Loop */}
+      <CreativeLoopWidget
+        discoveryStats={discoveryStats}
+        reflectionStats={reflectionStats}
+        todayStudy={todayStudy}
+      />
+
+      {/* 4. Today's Primary Mission */}
       <TodayMissionCard mission={todayMission} />
 
       {/* 4. Main Dashboard Grid Layout */}

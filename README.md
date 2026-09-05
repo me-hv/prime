@@ -89,6 +89,39 @@ PRIME is **not** a generic to-do list, habit tracker, or SaaS productivity board
   * 1-5 ratings for Focus & Intensity, Technical Difficulty, and Execution Confidence with reflection notes.
   * Automatic synchronization with `CreativeActivity` and dashboard streaks.
 
+### Phase 4: Discovery & Reflection (`/discover` & `/reflect`)
+* **The Master Artist Learning Loop**:
+  * Closes the deliberate practice loop: `DISCOVER → STUDY → REFLECT → IDENTIFY WEAKNESS → PRACTICE → CREATE → FINISH → REFLECT`.
+  * Visual master loop dashboard widget with live stage counters and focus indicators.
+* **Artist Library & Reference Vault (`/discover`)**:
+  * Curated artist directory with discipline badges, style notes, and linked works.
+  * Multi-format reference library across 8 media types (`Song`, `Album`, `Artist`, `Book`, `Article`, `Interview`, `Video`, `Other`).
+  * Study status tracking (`Studying`, `Active Reference`, `Discovered`, `Archived`) and favorite pin toggle.
+* **Track Dissection Arena & Study Sessions (`/discover/study/[id]`)**:
+  * Full-screen, distraction-free study environment with drift-proof countdown timer.
+  * 14 specialized study focus areas (Rhyme Schemes, Flow & Pocket, Storytelling, Wordplay, Dynamic Range, Arrangement, Vocal Delivery, Mixing, etc.).
+  * Structured anatomical prompt fields: Key Observations, Dissected Techniques, Favorite Section, Why It Works, What Surprised Me, Core Takeaway, Experiment Idea, and 1-5 Study Value Rating.
+* **Study → Practice Conversion Engine**:
+  * 1-Click bridge routing analyzed techniques into **Gymnasium Drills** (`/train`), **Writing Drafts** (`/create/write`), **Song Concepts** (`/create/songs`), or **Quick Captures**.
+* **Album Architecture Dissection**:
+  * Project-level body-of-work breakdowns: Narrative Arc & Sequencing, Sonic Cohesion, Standout Tracks & Pivots, Creative Risks, and Applied Production Lessons.
+* **Purpose-Driven Listening Diary**:
+  * Fast listening logger categorized by artistic intent (`Casual`, `Study`, `Inspiration`, `Production`, `Writing`, `Flow`, `Research`) with study-worthy flags.
+* **Data-Grounded Daily Retrospectives (`/reflect`)**:
+  * Live daily activity snapshot automatically counting drafts written, training minutes, exercises finished, studies completed, and songs updated today.
+  * 3-Question high-leverage retrospective: What worked / Continue doing, What broke / What to improve, and Tomorrow's #1 Priority.
+* **Weekly Creative Output Review & Diagnostic PRIME Insights**:
+  * 7-Day volume audit (practice minutes, drills completed, writings created, references studied, songs finished).
+  * Deterministic diagnostic insights: Most & least practiced disciplines, recurring creative bottlenecks, and suggested strategic focus.
+* **Creative Bottleneck Audit & Train Weakness Bridge**:
+  * Diagnosed creative roadblocks across 8 categories with 1-5 severity meters, root-cause notes, and attempted solutions.
+  * Instant **Train Weakness** launcher routing directly to targeted Phase 3 gymnasium drills.
+* **Breakthrough Log & Visual Milestones Timeline**:
+  * Permanent log of artistic quantum leaps linked to skills and songs.
+  * Chronological visual milestone timeline charting career and creative milestones.
+* **Database Backup & Export 4.0.0**:
+  * Extended JSON export backing up all 10 Phase 4 models alongside Phase 1–3 data.
+
 ---
 
 ## 4. Tech Stack

@@ -21,6 +21,16 @@ export async function GET() {
       rhymeChains,
       rhymeEntries,
       vocabularyEntries,
+      artists,
+      artistReferences,
+      studySessions,
+      albumStudies,
+      listeningEntries,
+      dailyReflections,
+      weeklyReviews,
+      bottlenecks,
+      breakthroughs,
+      milestones,
     ] = await Promise.all([
       prisma.user.findFirst({ include: { profile: true } }),
       prisma.profile.findFirst(),
@@ -62,10 +72,41 @@ export async function GET() {
       }),
       prisma.rhymeEntry.findMany({ orderBy: { createdAt: "desc" } }),
       prisma.vocabularyEntry.findMany({ orderBy: { createdAt: "desc" } }),
+      prisma.artist.findMany({
+        include: { references: true },
+        orderBy: { name: "asc" },
+      }),
+      prisma.artistReference.findMany({
+        include: { artist: true },
+        orderBy: { updatedAt: "desc" },
+      }),
+      prisma.studySession.findMany({
+        include: { reference: true, artist: true, skill: true },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.albumStudy.findMany({
+        include: { reference: true },
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.listeningEntry.findMany({
+        include: { reference: true },
+        orderBy: { date: "desc" },
+      }),
+      prisma.dailyReflection.findMany({ orderBy: { date: "desc" } }),
+      prisma.weeklyReview.findMany({ orderBy: { weekStart: "desc" } }),
+      prisma.bottleneck.findMany({
+        include: { skill: true },
+        orderBy: [{ resolved: "asc" }, { severity: "desc" }],
+      }),
+      prisma.breakthrough.findMany({
+        include: { skill: true, song: true, trainingSession: true, studySession: true },
+        orderBy: { date: "desc" },
+      }),
+      prisma.milestone.findMany({ orderBy: { date: "desc" } }),
     ]);
 
     const exportData = {
-      version: "3.0.0",
+      version: "4.0.0",
       exportedAt: new Date().toISOString(),
       user,
       profile,
@@ -84,6 +125,16 @@ export async function GET() {
       rhymeChains,
       rhymeEntries,
       vocabularyEntries,
+      artists,
+      artistReferences,
+      studySessions,
+      albumStudies,
+      listeningEntries,
+      dailyReflections,
+      weeklyReviews,
+      bottlenecks,
+      breakthroughs,
+      milestones,
     };
 
     return new NextResponse(JSON.stringify(exportData, null, 2), {
